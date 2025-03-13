@@ -1,16 +1,16 @@
 package database
 
-import(
+import (
 	"fmt"
 	"log"
 	"os"
 	"time"
+
 	"github.com/Dpyde/Omchu/internal/entity"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
-
 
 func InitDatabase() (db *gorm.DB, err error) {
 	const (
@@ -22,10 +22,10 @@ func InitDatabase() (db *gorm.DB, err error) {
 	)
 	//to config later
 	dsn := fmt.Sprintf("host=%s port=%d user=%s "+
-	"password=%s dbname=%s sslmode=disable",
-	host, port, user, password, dbname)
-	
-    // New logger for detailed SQL logging
+		"password=%s dbname=%s sslmode=disable",
+		host, port, user, password, dbname)
+
+	// New logger for detailed SQL logging
 	newLogger := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
 		logger.Config{
@@ -42,7 +42,7 @@ func InitDatabase() (db *gorm.DB, err error) {
 		return nil, err
 	}
 
-	db.Migrator().DropTable(&entity.User{}, &entity.Chat{}, &entity.Message{}, &entity.Picture{}, &entity.Swipe{},)
+	db.Migrator().DropTable(&entity.User{}, &entity.Chat{}, &entity.Message{}, &entity.Picture{}, &entity.Swipe{})
 	db.Migrator().DropTable("chat_users")
 	//above is to clean the table before migration
 	// Migrate the schema
@@ -50,14 +50,18 @@ func InitDatabase() (db *gorm.DB, err error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	// initialize the database with some data
-	newMessage := entity.Message{SenderID: 1,Text: "Hello World!"}
+	newMessage := entity.Message{SenderID: 1, Text: "Hello World!"}
 	newUser := entity.User{Name: "John Doe", Age: 12, Email: "myemail", Color: "blue", PhoneNumber: "1234567890", Password: "password"}
 	newUser2 := entity.User{Name: "Jane Doe", Age: 18, Email: "myemail2", Color: "blue", PhoneNumber: "2222222222", Password: "password2"}
+	newUser3 := entity.User{Name: "Jane Doe", Age: 18, Email: "myemail3", Color: "blue", PhoneNumber: "3333333333", Password: "password3"} //duplicate
 	db.Create(&newUser)
 	db.Create(&newUser2)
-	newChat := entity.Chat{Users: []entity.User{newUser,newUser2}, Messages: []entity.Message{newMessage}} 
+	db.Create(&newUser3)
+	newChat := entity.Chat{Users: []entity.User{newUser, newUser2}, Messages: []entity.Message{newMessage}}
 	db.Create(&newChat)
+	newChat2 := entity.Chat{Users: []entity.User{newUser, newUser3}, Messages: []entity.Message{newMessage}}
+	db.Create(&newChat2)
 	return
 }
