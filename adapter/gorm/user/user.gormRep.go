@@ -24,16 +24,23 @@ func (r *GormUserRepository) Save(user entity.User) error {
 	}
 	return nil
 }
-func (r *GormUserRepository) FindByID(id uint) (*entity.User, error) {
+func (r *GormUserRepository) FindByIDGORM(id uint) (*entity.User, error) {
 	var user entity.User
 	if err := r.db.First(&user, id).Error; err != nil {
 		return nil, err
 	}
 	return &user, nil
 }
-func (r *GormUserRepository) FindByUsername(username string) (*entity.User, error) {
+func (r *GormUserRepository) FindByUsernameGORM(username string) (*entity.User, error) {
 	var user entity.User
 	if err := r.db.Where("username = ?", username).First(&user).Error; err != nil {
+		return nil, errors.New("user not found")
+	}
+	return &user, nil
+}
+func (r *GormUserRepository) FindByEmailGORM(email string) (*entity.User, error) {
+	var user entity.User
+	if err := r.db.Where("email = ?", email).First(&user).Error; err != nil {
 		return nil, errors.New("user not found")
 	}
 	return &user, nil
