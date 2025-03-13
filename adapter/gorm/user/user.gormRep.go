@@ -1,24 +1,40 @@
 package userGormRep
 
 import (
-	"gorm.io/gorm"
+	"errors"
+
 	"github.com/Dpyde/Omchu/internal/entity"
-	"github.com/Dpyde/Omchu/internal/repository/user"
-  )
-  
-  // Secondary adapter
-  type GormUserRepository struct {
+	userRep "github.com/Dpyde/Omchu/internal/repository/user"
+	"gorm.io/gorm"
+)
+
+// Secondary adapter
+type GormUserRepository struct {
 	db *gorm.DB
-  }
-  
-  func NewGormUserRepository(db *gorm.DB) userRep.UserRepository {
+}
+
+func NewGormUserRepository(db *gorm.DB) userRep.UserRepository {
 	return &GormUserRepository{db: db}
-  }
-  
-  func (r *GormUserRepository) Save(user entity.User) error {
+}
+
+func (r *GormUserRepository) Save(user entity.User) error {
 	if result := r.db.Create(&user); result.Error != nil {
-	  // Handle database errors
-	  return result.Error
+		// Handle database errors
+		return result.Error
 	}
 	return nil
-  }
+}
+func (r *GormUserRepository) FindByID(id uint) (*entity.User, error) {
+	var user entity.User
+	if err := r.db.First(&user, id).Error; err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+func (r *GormUserRepository) FindByUsername(username string) (*entity.User, error) {
+	var user entity.User
+	if err := r.db.Where("username = ?", username).First(&user).Error; err != nil {
+		return nil, errors.New("user not found")
+	}
+	return &user, nil
+}
