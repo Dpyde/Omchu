@@ -1,11 +1,8 @@
 package userRep
 
-type AuthRepository interface {
-	Log(email string, password string) ()
-	Reg(username string, email string, password string)
+import "github.com/Dpyde/Omchu/internal/entity"
 
-	// HashPassword(u *entity.User) (string, error)
-	// GenerateToken(userId string) (string, error)
-	// ComparePassword(password string, u *entity.User) bool
-	// SendTokenResponse(u *entity.User) (string, error)
+type AuthRepository interface {
+	Reg(user *entity.User) (*entity.User, error)
+	Log(email string) (*entity.User, error)
 }

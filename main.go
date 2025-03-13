@@ -4,9 +4,12 @@ import (
 	"fmt"
 	"log"
 
+	authGormRep "github.com/Dpyde/Omchu/adapter/gorm/auth"
 	userGormRep "github.com/Dpyde/Omchu/adapter/gorm/user"
+	authHndl "github.com/Dpyde/Omchu/adapter/http/auth"
 	userHndl "github.com/Dpyde/Omchu/adapter/http/user"
 	"github.com/Dpyde/Omchu/database"
+	authSer "github.com/Dpyde/Omchu/internal/service/auth"
 	userSer "github.com/Dpyde/Omchu/internal/service/user"
 	"github.com/gofiber/fiber/v2"
 )
@@ -32,8 +35,13 @@ func main() {
 	userService := userSer.NewUserService(userRepo)
 	userHandler := userHndl.NewHttpUserHandler(userService)
 
+	authRepo := authGormRep.NewGormAuthRepository(db)
+	authService := authSer.NewAuthService(authRepo)
+	authHandler := authHndl.NewHttpAuthHandler(authService)
+
 	// Define routes
 	app.Post("/user", userHandler.CreateUser)
+	app.Post("/login", authHandler.Login).Post("/register", authHandler.Register)
 
 	// Start the server
 	app.Listen(":8000")

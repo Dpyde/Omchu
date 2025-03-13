@@ -6,40 +6,37 @@ import (
 	"time"
 
 	"github.com/Dpyde/Omchu/internal/entity"
+	authRep "github.com/Dpyde/Omchu/internal/repository/auth"
+
 	jwt "github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type AuthService interface {
-	Log(email string, password string)
-	Reg(user *entity.User) (entity.User, error)
+	Register(username string, email string, password string) (*entity.User, error)
+	Login(email string, password string) error
 }
 
 type authServiceImpl struct {
 	repo authRep.AuthRepository
 }
 
-func NewUserService(repo authRep.UserRepository) AuthService {
+func NewAuthService(repo authRep.AuthRepository) AuthService {
 	return &authServiceImpl{repo: repo}
 }
 
-func (s *authServiceImpl) Login(email string, password string) (string, error) {
-	user, err := s.repo.FindByEmail(email)
+func (s *authServiceImpl) Login(email string, password string) error {
+	user, err := s.repo.Log(email)
 	if err != nil {
-		return "", err
+		return errors.New("user not found")
 	}
 	if !ComparePassword(password, user) {
-		return "", errors.New("incorrect password")
+		return errors.New("incorrect password")
 	}
-	token, err := GenerateToken(user.ID)
-	if err != nil {
-		return "", err
-	}
-
-	return token, nil
+	return nil
 }
 func (s *authServiceImpl) Register(username string, email string, password string) (*entity.User, error) {
-	_, err := s.repo.FindByEmail(email)
+	_, err := s.repo.Log(email)
 	if err == nil {
 		return nil, errors.New("email already taken")
 	}
@@ -52,12 +49,13 @@ func (s *authServiceImpl) Register(username string, email string, password strin
 		Email:    email,
 		Password: hashedPassword,
 	}
-	if err := s.repo.Reg(*newUser); err != nil {
+	if _, err := s.repo.Reg(newUser); err != nil {
 		return nil, err
 	}
 	return newUser, nil
 }
 
+// NOTE: The following functions are not used in the current implementation
 func HashPassword(password string) (string, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {

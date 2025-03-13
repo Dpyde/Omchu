@@ -5,7 +5,7 @@ import (
 
 	"github.com/Dpyde/Omchu/internal/entity"
 	userRep "github.com/Dpyde/Omchu/internal/repository/user"
-	authSer "github.com/Dpyde/Omchu/internal/service/auth"
+	authSer "github.com/Dpyde/Omchu/internal/service/auth" // Ensure this path is correct and the package exists
 )
 
 // primary port
@@ -35,7 +35,7 @@ func (s *userServiceImpl) CreateUser(user entity.User) error {
 	}
 	user.Password = hashedPassword
 
-	if err := s.repo.Save(user); err != nil {
+	if err := s.repo.Save(&user); err != nil {
 		return err
 	}
 	return nil

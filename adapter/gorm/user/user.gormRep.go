@@ -17,13 +17,15 @@ func NewGormUserRepository(db *gorm.DB) userRep.UserRepository {
 	return &GormUserRepository{db: db}
 }
 
-func (r *GormUserRepository) Save(user entity.User) error {
+func (r *GormUserRepository) Save(user *entity.User) error {
 	if result := r.db.Create(&user); result.Error != nil {
 		// Handle database errors
 		return result.Error
 	}
 	return nil
 }
+
+// func (r *GormUserRepository) FindByIDGORM(id uint) (*entity.User, error) {
 func (r *GormUserRepository) FindByIDGORM(id uint) (*entity.User, error) {
 	var user entity.User
 	if err := r.db.First(&user, id).Error; err != nil {

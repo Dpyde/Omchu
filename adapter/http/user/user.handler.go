@@ -29,6 +29,6 @@ func (h *HttpUserHandler) CreateUser(c *fiber.Ctx) error {
 		// Return an appropriate error message and status code
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
-	authHndl.SendTokenResponse(c, user, fiber.StatusAccepted)
-	return c.Status(fiber.StatusCreated).JSON(user)
+	authHndl.SendTokenResponse(c, user, fiber.StatusCreated)
+	return nil
 }
