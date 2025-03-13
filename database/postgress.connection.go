@@ -53,10 +53,13 @@ func InitDatabase() (db *gorm.DB, err error) {
 	
 	// initialize the database with some data
 	newMessage := entity.Message{SenderID: 1,Text: "Hello World!"}
-	newUser := entity.User{Name: "John Doe", Age: 12, Email: "myemail", Color: "blue", PhoneNumber: "1234567890", Password: "password"}
+
 	newUser2 := entity.User{Name: "Jane Doe", Age: 18, Email: "myemail2", Color: "blue", PhoneNumber: "2222222222", Password: "password2"}
+	newSwipe := entity.Swipe{SwiperID: 1, SwipedID: 2, Liked: true}
+	newUser := entity.User{Name: "John Doe", Age: 12, Email: "myemail", Color: "blue", PhoneNumber: "1234567890", Password: "password",Swipes: []entity.Swipe{newSwipe}}
 	db.Create(&newUser)
 	db.Create(&newUser2)
+	
 	newChat := entity.Chat{Users: []entity.User{newUser,newUser2}, Messages: []entity.Message{newMessage}} 
 	db.Create(&newChat)
 	return
