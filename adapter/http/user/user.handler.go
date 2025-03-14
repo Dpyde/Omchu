@@ -21,17 +21,20 @@ func NewHttpUserHandler(service userSer.UserService) *HttpUserHandler {
 
 func (h *HttpUserHandler) CreateUser(c *fiber.Ctx) error {
 	var user entity.User
+	// fmt.Println("checkPoint1")
 	if err := c.BodyParser(&user); err != nil {
-		fmt.Println(err)
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"success": false, "error": "invalid request"})
 	}
-	createdUser, err := h.service.CreateUser(user)
+
+	newUser, err := h.service.CreateUser(user)
+
+	// fmt.Println("checkPoint2")
 	if err != nil {
-		// Return an appropriate error message and status code
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"success": false, "error": err.Error()})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"success": false, "error": err.Error()})
 	}
-	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"success": true, "user": createdUser})
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"success": true, "user": newUser})
 }
+
 func (h *HttpUserHandler) FindUsersToSwipe(c *fiber.Ctx) error {
 	idStr := c.Params("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
@@ -65,4 +68,54 @@ func (h *HttpUserHandler) UpdateUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"success": false, "error": err.Error()})
 	}
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"success": true, "user": updatedUser})
+}
+
+func (h *HttpUserHandler) FindByID(c *fiber.Ctx) error {
+	idStr := c.Params("id")
+	id, err := strconv.ParseUint(idStr, 10, 32)
+	if err != nil {
+		fmt.Println(err)
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"success": false, "error": "invalid user ID"})
+	}
+	user, err := h.service.FindByID(uint(id))
+	if err != nil {
+		// Return an appropriate error message and status code
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"success": false, "error": err.Error()})
+	}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"success": true, "user": user})
+}
+
+func (h *HttpUserHandler) FindByUsername(c *fiber.Ctx) error {
+	username := c.Params("username")
+	user, err := h.service.FindByUsername(username)
+	if err != nil {
+		// Return an appropriate error message and status code
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"success": false, "error": err.Error()})
+	}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"success": true, "user": user})
+}
+
+func (h *HttpUserHandler) FindByEmail(c *fiber.Ctx) error {
+	email := c.Params("email")
+	user, err := h.service.FindByEmail(email)
+	if err != nil {
+		// Return an appropriate error message and status code
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"success": false, "error": err.Error()})
+	}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"success": true, "user": user})
+}
+func (h *HttpUserHandler) RemoveUser(c *fiber.Ctx) error {
+	idStr := c.Params("id")
+	id, err := strconv.ParseUint(idStr, 10, 32)
+	if err != nil {
+		fmt.Println(err)
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"success": false, "error": "invalid user ID"})
+	}
+	fmt.Println("removePoint1")
+	err = h.service.RemoveUser(uint(id))
+	if err != nil {
+		// Return an appropriate error message and status code
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"success": false, "error": err.Error()})
+	}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"success": true, "message": "user deleted successfully"})
 }

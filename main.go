@@ -4,14 +4,16 @@ import (
 	"fmt"
 	"log"
 
-	authGormRep "github.com/Dpyde/Omchu/adapter/gorm/auth"
-	userGormRep "github.com/Dpyde/Omchu/adapter/gorm/user"
-	authHndl "github.com/Dpyde/Omchu/adapter/http/auth"
-	middleware "github.com/Dpyde/Omchu/adapter/http/middleware"
-	userHndl "github.com/Dpyde/Omchu/adapter/http/user"
+	// authGormRep "github.com/Dpyde/Omchu/adapter/gorm/auth"
+	// userGormRep "github.com/Dpyde/Omchu/adapter/gorm/user"
+	// authHndl "github.com/Dpyde/Omchu/adapter/http/auth"
+	// userHndl "github.com/Dpyde/Omchu/adapter/http/user"
+	// "github.com/Dpyde/Omchu/database"
+	// authSer "github.com/Dpyde/Omchu/internal/service/auth"
+	// userSer "github.com/Dpyde/Omchu/internal/service/user"
+	// middleware "github.com/Dpyde/Omchu/middleware"
 	"github.com/Dpyde/Omchu/database"
-	authSer "github.com/Dpyde/Omchu/internal/service/auth"
-	userSer "github.com/Dpyde/Omchu/internal/service/user"
+	"github.com/Dpyde/Omchu/route"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -32,17 +34,25 @@ func main() {
 	}
 	fmt.Println("Database connected")
 
-	userRepo := userGormRep.NewGormUserRepository(db)
-	userService := userSer.NewUserService(userRepo)
-	userHandler := userHndl.NewHttpUserHandler(userService)
+	// userRepo := userGormRep.NewGormUserRepository(db)
+	// userService := userSer.NewUserService(userRepo)
+	// userHandler := userHndl.NewHttpUserHandler(userService)
 
-	authRepo := authGormRep.NewGormAuthRepository(db)
-	authService := authSer.NewAuthService(authRepo)
-	authHandler := authHndl.NewHttpAuthHandler(authService)
+	// authRepo := authGormRep.NewGormAuthRepository(db)
+	// authService := authSer.NewAuthService(authRepo)
+	// authHandler := authHndl.NewHttpAuthHandler(authService)
 
-	// Define routes
-	app.Post("/login", authHandler.Login).Post("/register", authHandler.Register)
-	app.Post("/user", middleware.AuthMiddleware, userHandler.CreateUser).Put("/user/:id", middleware.AuthMiddleware, userHandler.UpdateUser)
+	// // Define routes
+	// app.Post("/login", authHandler.Login)
+	// app.Post("/register", authHandler.Register)
+
+	// app.Post("/user", middleware.AuthMiddleware, userHandler.CreateUser)
+	// app.Put("/user/:id", middleware.AuthMiddleware, userHandler.UpdateUser)
+	// app.Delete("/user/:id", middleware.AuthMiddleware, userHandler.RemoveUser)
+	// app.Get("/user/:id", middleware.AuthMiddleware, userHandler.FindByID)
+	// app.Get("/users/:id", middleware.AuthMiddleware, userHandler.FindUsersToSwipe)
+	route.SetupUserRoutes(app, db)
+	route.SetupAuthRoutes(app, db)
 
 	// Start the server
 	app.Listen(":8000")

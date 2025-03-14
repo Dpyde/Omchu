@@ -17,10 +17,11 @@ func NewGormUserRepository(db *gorm.DB) userRep.UserRepository {
 	return &GormUserRepository{db: db}
 }
 
-func (r *GormUserRepository) Save(user *entity.User) (*entity.User, error) {
+func (r *GormUserRepository) CreateUser(user *entity.User) (*entity.User, error) {
 	if err := r.db.Create(user).Error; err != nil {
 		return nil, errors.New("failed to create user")
 	}
+	// fmt.Println("checkPoint4")
 	return user, nil
 }
 func (r *GormUserRepository) FindUsersToSwipe(id uint) (*[]entity.User, error) {
@@ -71,7 +72,11 @@ func (r *GormUserRepository) Update(newUser *entity.User, id uint) (*entity.User
 	}
 	return &user, nil
 }
-func (r *GormUserRepository) Remove(user *entity.User) error {
+func (r *GormUserRepository) Remove(id uint) error {
+	var user entity.User
+	if err := r.db.First(&user, id).Error; err != nil {
+		return err
+	}
 	if err := r.db.Delete(&user).Error; err != nil {
 		return err
 	}

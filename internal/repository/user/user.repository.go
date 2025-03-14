@@ -5,11 +5,11 @@ import (
 )
 
 type UserRepository interface {
-	Save(user *entity.User) (*entity.User, error)
+	CreateUser(user *entity.User) (*entity.User, error)
 	Update(newUser *entity.User, id uint) (*entity.User, error)
 	FindUsersToSwipe(id uint) (*[]entity.User, error)
 	FindByIDGORM(id uint) (*entity.User, error)
 	FindByUsernameGORM(username string) (*entity.User, error)
 	FindByEmailGORM(email string) (*entity.User, error)
-	Remove(user *entity.User) error
+	Remove(id uint) error
 }
