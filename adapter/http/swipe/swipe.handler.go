@@ -19,11 +19,15 @@ func (h *HtttSwipeHandler) SwipeCheck(c *fiber.Ctx) error {
 	if err := c.BodyParser(&swipe); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
-
-	if err := h.service.SwipeCheck(swipe); err != nil {
+	var is_match bool
+	if err := h.service.SwipeCheck(&swipe, &is_match); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
 	
-	return c.Status(fiber.StatusOK).JSON(swipe)
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"success":  true,
+		"data":   swipe,
+		"is_match": is_match,
+	})
 }
 

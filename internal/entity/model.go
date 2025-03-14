@@ -9,8 +9,7 @@ type User struct {
 	Name        string
 	Age 		uint
 	Email		string `gorm:"unique"`
-	Color 	 	string 
-	PhoneNumber string `gorm:"unique"`
+	Color 	 	string
 	Password	string
 	Pictures	[]Picture
 	Chats		[]Chat `gorm:"many2many:chat_users;"`

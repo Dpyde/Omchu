@@ -9,7 +9,7 @@ import (
 
 //primary port
 type SwipeService interface {
-	SwipeCheck(user entity.Swipe) error
+	SwipeCheck(swipe *entity.Swipe, is_match *bool) error
 }
 
 type swipeServiceImpl struct {
@@ -20,12 +20,12 @@ func NewSwipeService(repo swipeRep.SwipeRepository) SwipeService {
 	return &swipeServiceImpl{repo: repo}
 }
 
-func (s *swipeServiceImpl) SwipeCheck(swipe entity.Swipe) error {
+func (s *swipeServiceImpl) SwipeCheck(swipe *entity.Swipe ,is_match *bool) error {
 	if(swipe.SwipedID == swipe.SwiperID) {
 		return errors.New("You can't swipe yourself")
 	}
 	// Business logic...
-	if err := s.repo.Pud(swipe); err != nil {
+	if err := s.repo.Pud(swipe,is_match); err != nil {
 		return err
 	}
 	return nil

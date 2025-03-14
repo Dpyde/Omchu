@@ -16,7 +16,7 @@ func NewGormSwipeRepository(db *gorm.DB) swipeRep.SwipeRepository {
 	return &GormSwipeRepository{db: db}
 }
 
-func (r *GormSwipeRepository) Pud(swipe entity.Swipe) error {
+func (r *GormSwipeRepository) Pud(swipe *entity.Swipe,is_match *bool) error {
 	if result := r.db.Create(&swipe); result.Error != nil {
 		// Handle database errors
 		return result.Error
@@ -32,6 +32,20 @@ func (r *GormSwipeRepository) Pud(swipe entity.Swipe) error {
 		}
 	} else {
 		fmt.Println("Matched swipe found")
+		chat := entity.Chat{}
+		err := r.db.Create(&chat).Error
+		if err != nil {
+    		return err
+		}
+		err = r.db.Model(&chat).Association("Users").Append(
+			&entity.User{Model: gorm.Model{ID: swipe.SwiperID}},
+			&entity.User{Model: gorm.Model{ID: swipe.SwipedID}},
+		)
+		if err != nil {
+			return err
+		}
+		*is_match = true
+		fmt.Println("Chat created");
 	}
 
 	return nil
