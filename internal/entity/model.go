@@ -9,12 +9,11 @@ type User struct {
 	Name        string
 	Age 		uint
 	Email		string `gorm:"unique"`
-	Color 	 	string 
-	PhoneNumber string `gorm:"unique"`
+	Color 	 	string
 	Password	string
 	Pictures	[]Picture
 	Chats		[]Chat `gorm:"many2many:chat_users;"`
-	swipes		[]Swipe `gorm:"foreignKey:SwiperID"`
+	Swipes		[]Swipe `gorm:"foreignKey:SwiperID"`
 }
 
 type Chat struct {
@@ -37,8 +36,7 @@ type Picture struct {
 }
 
 type Swipe struct {
-	gorm.Model
-	SwiperID	uint
-	SwipedID	uint
-	Liked		bool
+	SwiperID uint `gorm:"primaryKey"`
+	SwipedID uint `gorm:"primaryKey"`
+	Liked    bool
 }

@@ -8,6 +8,9 @@ import (
   "github.com/Dpyde/Omchu/internal/service/user"
   "github.com/Dpyde/Omchu/database"
   "github.com/gofiber/fiber/v2"
+  "github.com/Dpyde/Omchu/adapter/gorm/swipe"
+  "github.com/Dpyde/Omchu/adapter/http/swipe"
+  "github.com/Dpyde/Omchu/internal/service/swipe"
 )
 
 const (
@@ -31,8 +34,14 @@ func main() {
   userService := userSer.NewUserService(userRepo)
   userHandler := userHndl.NewHttpUserHandler(userService)
 
+  swipeRepo := swipeGormRep.NewGormSwipeRepository(db)
+  swipeService := swipeSer.NewSwipeService(swipeRepo)
+  swipeHandler := swipeHndl.NewHttpSwipeHandler(swipeService)
+
+
   // Define routes
   app.Post("/user", userHandler.CreateUser)
+  app.Post("/swipe", swipeHandler.SwipeCheck)
 
   // Start the server
   app.Listen(":8000")
