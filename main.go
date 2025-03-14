@@ -7,6 +7,7 @@ import (
 	authGormRep "github.com/Dpyde/Omchu/adapter/gorm/auth"
 	userGormRep "github.com/Dpyde/Omchu/adapter/gorm/user"
 	authHndl "github.com/Dpyde/Omchu/adapter/http/auth"
+	middleware "github.com/Dpyde/Omchu/adapter/http/middleware"
 	userHndl "github.com/Dpyde/Omchu/adapter/http/user"
 	"github.com/Dpyde/Omchu/database"
 	authSer "github.com/Dpyde/Omchu/internal/service/auth"
@@ -40,8 +41,8 @@ func main() {
 	authHandler := authHndl.NewHttpAuthHandler(authService)
 
 	// Define routes
-	app.Post("/user", userHandler.CreateUser)
 	app.Post("/login", authHandler.Login).Post("/register", authHandler.Register)
+	app.Post("/user", middleware.AuthMiddleware, userHandler.CreateUser)
 
 	// Start the server
 	app.Listen(":8000")
