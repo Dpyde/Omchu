@@ -14,7 +14,7 @@ func AuthMiddleware(c *fiber.Ctx) error {
 
 	// If there's no token in the cookie, return unauthorized
 	if token == "" {
-		return c.Status(fiber.StatusUnauthorized).SendString("Mueng mai me token wa")
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"success": false, "error": "Token mueng mai mee wa"})
 	}
 	jwtMiddleware := jwtware.New(jwtware.Config{
 		SigningKey: []byte(os.Getenv("JWT_SECRET")), // Secret key for JWT signing and verification
@@ -22,7 +22,7 @@ func AuthMiddleware(c *fiber.Ctx) error {
 
 	// Validate the token
 	if err := jwtMiddleware(c); err != nil {
-		return c.Status(fiber.StatusUnauthorized).SendString("Token mueng mai mee wa")
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"success": false, "error": "Token mueng mai mee wa"})
 	}
 
 	// Send a new token and refresh the cookie (use your provided `sendNewTokenRespond` function)

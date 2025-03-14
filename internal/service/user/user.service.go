@@ -14,6 +14,8 @@ type UserService interface {
 	FindByID(id uint) (*entity.User, error)
 	FindByUsername(username string) (*entity.User, error)
 	FindByEmail(email string) (*entity.User, error)
+	UpdateUser(newUser entity.User, id uint) (*entity.User, error)
+	RemoveUser(user entity.User) error
 }
 
 type userServiceImpl struct {
@@ -60,4 +62,17 @@ func (s *userServiceImpl) FindByEmail(email string) (*entity.User, error) {
 		return nil, err
 	}
 	return user, nil
+}
+func (s *userServiceImpl) UpdateUser(newUser entity.User, id uint) (*entity.User, error) {
+	updatedUser, err := s.repo.Update(&newUser, id)
+	if err != nil {
+		return nil, err
+	}
+	return updatedUser, nil
+}
+func (s *userServiceImpl) RemoveUser(user entity.User) error {
+	if err := s.repo.Remove(&user); err != nil {
+		return err
+	}
+	return nil
 }

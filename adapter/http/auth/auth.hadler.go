@@ -21,29 +21,28 @@ func NewHttpAuthHandler(service authSer.AuthService) *HttpAuthHandler {
 func (h *HttpAuthHandler) Login(c *fiber.Ctx) error {
 	var user entity.User
 	if err := c.BodyParser(&user); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid request"})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"success": false, "error": "invalid request"})
 	}
 
 	if err := h.service.Login(user.Email, user.Password); err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": err.Error()})
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"success": false, "error": err.Error()})
 	}
-	SendTokenResponse(c, user, fiber.StatusOK)
+
 	// return c.JSON(fiber.Map{"token": token})
-	return nil
+	return SendTokenResponse(c, user, fiber.StatusOK)
 }
 
 func (h *HttpAuthHandler) Register(c *fiber.Ctx) error {
 	var user entity.User
 	if err := c.BodyParser(&user); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid request"})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"success": false, "error": "invalid request"})
 	}
 
 	newUser, err := h.service.Register(user.Name, user.Email, user.Password)
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"success": false, "error": err.Error()})
 	}
-	SendTokenResponse(c, *newUser, fiber.StatusCreated)
-	return nil
+	return SendTokenResponse(c, *newUser, fiber.StatusCreated)
 
 }
 
@@ -53,7 +52,7 @@ func SendTokenResponse(c *fiber.Ctx, user entity.User, statusCode int) error {
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"success": false,
-			"msg":     "Fail to generate token",
+			"error":   "Fail to generate token",
 		})
 	}
 	cookieExpire := time.Now().Add(24 * time.Hour) // Default 1 day, adjust as needed

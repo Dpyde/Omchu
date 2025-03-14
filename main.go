@@ -42,7 +42,7 @@ func main() {
 
 	// Define routes
 	app.Post("/login", authHandler.Login).Post("/register", authHandler.Register)
-	app.Post("/user", middleware.AuthMiddleware, userHandler.CreateUser)
+	app.Post("/user", middleware.AuthMiddleware, userHandler.CreateUser).Put("/user/:id", middleware.AuthMiddleware, userHandler.UpdateUser)
 
 	// Start the server
 	app.Listen(":8000")

@@ -47,3 +47,19 @@ func (r *GormUserRepository) FindByEmailGORM(email string) (*entity.User, error)
 	}
 	return &user, nil
 }
+func (r *GormUserRepository) Update(newUser *entity.User, id uint) (*entity.User, error) {
+	var user entity.User
+	if err := r.db.First(&user, id).Error; err != nil {
+		return nil, err
+	}
+	if err := r.db.Model(&user).Updates(newUser).Error; err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+func (r *GormUserRepository) Remove(user *entity.User) error {
+	if err := r.db.Delete(&user).Error; err != nil {
+		return err
+	}
+	return nil
+}
