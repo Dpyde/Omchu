@@ -17,12 +17,26 @@ func NewGormUserRepository(db *gorm.DB) userRep.UserRepository {
 	return &GormUserRepository{db: db}
 }
 
-func (r *GormUserRepository) Save(user *entity.User) error {
-	if result := r.db.Create(&user); result.Error != nil {
-		// Handle database errors
-		return result.Error
+func (r *GormUserRepository) Save(user *entity.User) (*entity.User, error) {
+	if err := r.db.Create(user).Error; err != nil {
+		return nil, errors.New("failed to create user")
 	}
-	return nil
+	return user, nil
+}
+func (r *GormUserRepository) FindUsersToSwipe(id uint) (*[]entity.User, error) {
+	var user entity.User
+	if err := r.db.First(&user, id).Error; err != nil {
+		return nil, err
+	}
+	swiped := r.db.Model(&entity.Swipe{}).
+		Select("SwipedID").
+		Where("SwiperID = ?", id)
+	var users []entity.User
+	r.db.Where("id != ?", id).
+		Where("id NOT IN (?)", swiped).
+		Find(&users)
+
+	return &users, nil
 }
 
 // func (r *GormUserRepository) FindByIDGORM(id uint) (*entity.User, error) {

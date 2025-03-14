@@ -1,8 +1,6 @@
 package userSer
 
 import (
-	"errors"
-
 	"github.com/Dpyde/Omchu/internal/entity"
 	userRep "github.com/Dpyde/Omchu/internal/repository/user"
 	authSer "github.com/Dpyde/Omchu/internal/service/auth" // Ensure this path is correct and the package exists
@@ -10,7 +8,8 @@ import (
 
 // primary port
 type UserService interface {
-	CreateUser(user entity.User) error
+	CreateUser(user entity.User) (*entity.User, error)
+	FindUsersToSwipe(id uint) (*[]entity.User, error)
 	FindByID(id uint) (*entity.User, error)
 	FindByUsername(username string) (*entity.User, error)
 	FindByEmail(email string) (*entity.User, error)
@@ -26,21 +25,25 @@ func NewUserService(repo userRep.UserRepository) UserService {
 	return &userServiceImpl{repo: repo}
 }
 
-func (s *userServiceImpl) CreateUser(user entity.User) error {
-	if user.Age <= 18 {
-		return errors.New("PM might hungry")
-	}
+func (s *userServiceImpl) CreateUser(user entity.User) (*entity.User, error) {
 	// Business logic...
 	hashedPassword, err := authSer.HashPassword(user.Password)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	user.Password = hashedPassword
-
-	if err := s.repo.Save(&user); err != nil {
-		return err
+	createdUser, err := s.repo.Save(&user)
+	if err != nil {
+		return nil, err
 	}
-	return nil
+	return createdUser, nil
+}
+func (s *userServiceImpl) FindUsersToSwipe(id uint) (*[]entity.User, error) {
+	users, err := s.repo.FindUsersToSwipe(id)
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
 }
 func (s *userServiceImpl) FindByID(id uint) (*entity.User, error) {
 	user, err := s.repo.FindByIDGORM(id)

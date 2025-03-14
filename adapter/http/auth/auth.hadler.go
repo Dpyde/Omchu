@@ -38,7 +38,7 @@ func (h *HttpAuthHandler) Register(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"success": false, "error": "invalid request"})
 	}
 
-	newUser, err := h.service.Register(user.Name, user.Email, user.Password)
+	newUser, err := h.service.Register(user.Name, user.Email, user.Password, user.Age)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"success": false, "error": err.Error()})
 	}

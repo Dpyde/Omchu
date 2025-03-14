@@ -25,12 +25,26 @@ func (h *HttpUserHandler) CreateUser(c *fiber.Ctx) error {
 		fmt.Println(err)
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"success": false, "error": "invalid request"})
 	}
-
-	if err := h.service.CreateUser(user); err != nil {
+	createdUser, err := h.service.CreateUser(user)
+	if err != nil {
 		// Return an appropriate error message and status code
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"success": false, "error": err.Error()})
 	}
-	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"success": true, "user": user})
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"success": true, "user": createdUser})
+}
+func (h *HttpUserHandler) FindUsersToSwipe(c *fiber.Ctx) error {
+	idStr := c.Params("id")
+	id, err := strconv.ParseUint(idStr, 10, 32)
+	if err != nil {
+		fmt.Println(err)
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"success": false, "error": "invalid user ID"})
+	}
+	users, err := h.service.FindUsersToSwipe(uint(id))
+	if err != nil {
+		// Return an appropriate error message and status code
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"success": false, "error": err.Error()})
+	}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"success": true, "users": users})
 }
 
 func (h *HttpUserHandler) UpdateUser(c *fiber.Ctx) error {

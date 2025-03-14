@@ -13,7 +13,7 @@ import (
 )
 
 type AuthService interface {
-	Register(username string, email string, password string) (*entity.User, error)
+	Register(username string, email string, password string, age uint) (*entity.User, error)
 	Login(email string, password string) error
 }
 
@@ -35,11 +35,15 @@ func (s *authServiceImpl) Login(email string, password string) error {
 	}
 	return nil
 }
-func (s *authServiceImpl) Register(username string, email string, password string) (*entity.User, error) {
+func (s *authServiceImpl) Register(username string, email string, password string, age uint) (*entity.User, error) {
 	_, err := s.repo.Log(email)
 	if err == nil {
 		return nil, errors.New("email already taken")
 	}
+	if age <= 18 {
+		return nil, errors.New("PM might hungry")
+	}
+
 	hashedPassword, err := HashPassword(password)
 	if err != nil {
 		return nil, err
@@ -48,6 +52,7 @@ func (s *authServiceImpl) Register(username string, email string, password strin
 		Name:     username,
 		Email:    email,
 		Password: hashedPassword,
+		Age:      age,
 	}
 	if _, err := s.repo.Reg(newUser); err != nil {
 		return nil, err

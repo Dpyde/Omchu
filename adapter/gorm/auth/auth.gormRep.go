@@ -2,7 +2,6 @@ package authGormRep
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/Dpyde/Omchu/internal/entity"
 	authRep "github.com/Dpyde/Omchu/internal/repository/auth"
@@ -20,7 +19,7 @@ func NewGormAuthRepository(db *gorm.DB) authRep.AuthRepository {
 func (r *GormAuthRepository) Reg(newUser *entity.User) (*entity.User, error) {
 	// Check if the username already exists
 	if err := r.db.Create(newUser).Error; err != nil {
-		return nil, fmt.Errorf("failed to create user: %v", err)
+		return nil, errors.New("failed to create user")
 	}
 	return newUser, nil
 }
