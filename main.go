@@ -3,46 +3,43 @@ package main
 import (
 	"fmt"
 	"log"
-  "github.com/Dpyde/Omchu/adapter/gorm/user"
-  "github.com/Dpyde/Omchu/adapter/http/user"
-  "github.com/Dpyde/Omchu/internal/service/user"
-  "github.com/Dpyde/Omchu/database"
-  "github.com/gofiber/fiber/v2"
-  "github.com/Dpyde/Omchu/adapter/gorm/swipe"
-  "github.com/Dpyde/Omchu/adapter/http/swipe"
-  "github.com/Dpyde/Omchu/internal/service/swipe"
+
+	// authGormRep "github.com/Dpyde/Omchu/adapter/gorm/auth"
+	// userGormRep "github.com/Dpyde/Omchu/adapter/gorm/user"
+	// authHndl "github.com/Dpyde/Omchu/adapter/http/auth"
+	// userHndl "github.com/Dpyde/Omchu/adapter/http/user"
+	// "github.com/Dpyde/Omchu/database"
+	// authSer "github.com/Dpyde/Omchu/internal/service/auth"
+	// userSer "github.com/Dpyde/Omchu/internal/service/user"
+	// middleware "github.com/Dpyde/Omchu/middleware"
+	"github.com/Dpyde/Omchu/database"
+	"github.com/Dpyde/Omchu/route"
+	"github.com/gofiber/fiber/v2"
 )
 
 const (
-  host     = "localhost"  // or the Docker service name if running in another container
-  port     = 5432         // default PostgreSQL port
-  user     = "myuser"     // as defined in docker-compose.yml
-  password = "mypassword" // as defined in docker-compose.yml
-  dbname   = "mydatabase" // as defined in docker-compose.yml
+	host     = "localhost"  // or the Docker service name if running in another container
+	port     = 5432         // default PostgreSQL port
+	user     = "myuser"     // as defined in docker-compose.yml
+	password = "mypassword" // as defined in docker-compose.yml
+	dbname   = "mydatabase" // as defined in docker-compose.yml
 )
 
 func main() {
-  // Configure your PostgreSQL database details here
-  app := fiber.New()
-	db,err := database.InitDatabase();
-  if err != nil {
-    log.Fatal(err)
-  }
-  fmt.Println("Database connected")
+	// Configure your PostgreSQL database details here
+	app := fiber.New()
+	db, err := database.InitDatabase()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Database connected")
+	// Configure your PostgreSQL database details here
 
-  userRepo := userGormRep.NewGormUserRepository(db)
-  userService := userSer.NewUserService(userRepo)
-  userHandler := userHndl.NewHttpUserHandler(userService)
+	route.SetupChatRoutes(app, db)
+	route.SetupUserRoutes(app, db)
+	route.SetupAuthRoutes(app, db)
+	route.SetupSwipeRoutes(app, db)
 
-  swipeRepo := swipeGormRep.NewGormSwipeRepository(db)
-  swipeService := swipeSer.NewSwipeService(swipeRepo)
-  swipeHandler := swipeHndl.NewHttpSwipeHandler(swipeService)
-
-
-  // Define routes
-  app.Post("/user", userHandler.CreateUser)
-  app.Post("/swipe", swipeHandler.SwipeCheck)
-
-  // Start the server
-  app.Listen(":8000")
+	// Start the server
+	app.Listen(":8000")
 }
