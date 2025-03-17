@@ -15,7 +15,8 @@ func NewHttpMessageHandler(service MessageService) *HttpMessageHandler {
 
 func (h *HttpMessageHandler) GetMessage(c *fiber.Ctx) error {
 	chatId := c.Params("chatId")
-	messages, err := h.service.GetMessage(chatId)
+	UserId := c.Locals("UserId").(string)
+	messages, err := h.service.GetMessage(chatId, UserId)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}

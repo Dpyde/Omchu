@@ -33,6 +33,10 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Println("Database connected")
+	err = godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 	// Configure your PostgreSQL database details here
 
 	route.SetupChatRoutes(app, db)

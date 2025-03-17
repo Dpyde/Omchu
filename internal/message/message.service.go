@@ -5,7 +5,7 @@ import (
 )
 
 type MessageService interface {
-	GetMessage(chatId string) ([]entity.Message, error)
+	GetMessage(chatId string, UserId string) ([]entity.Message, error)
 	SendMessage(message *entity.Message) error
 }
 
@@ -17,8 +17,8 @@ func NewMessageService(repo MessageRepository) MessageService {
 	return &messageServiceImpl{repo: repo}
 }
 
-func (s *messageServiceImpl) GetMessage(chatId string) ([]entity.Message, error) {
-	messages, err := s.repo.GetMessage(chatId)
+func (s *messageServiceImpl) GetMessage(chatId string, userId string) ([]entity.Message, error) {
+	messages, err := s.repo.GetMessage(chatId, userId)
 	if err != nil {
 		return []entity.Message{}, err
 	}

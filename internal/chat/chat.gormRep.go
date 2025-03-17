@@ -35,7 +35,7 @@ func (r *GormChatRepository) FindById(userId string) ([]ExtendedChat, error) {
 			return []ExtendedChat{}, err
 		}
 
-		noti := !latestMessage.Read // Check if the latest message is unread
+		noti := !latestMessage.Read && latestMessage.ID != 0 // Check if the latest message is unread
 		extendedChats = append(extendedChats, ExtendedChat{Chat: chat, Noti: noti})
 	}
 

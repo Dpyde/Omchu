@@ -7,6 +7,7 @@ import (
 
 	"github.com/Dpyde/Omchu/internal/entity"
 	"github.com/gofiber/fiber/v2"
+	jwt "github.com/golang-jwt/jwt/v5"
 )
 
 type HttpAuthHandler struct {
@@ -72,4 +73,32 @@ func SendTokenResponse(c *fiber.Ctx, user entity.User, statusCode int) error {
 		"success": true,
 		"token":   token,
 	})
+}
+
+func extractUserFromJWT(c *fiber.Ctx) error {
+
+	// Extract the token from the Fiber context (inserted by the JWT middleware)
+	tokenStr := c.Cookies("token")
+	if tokenStr == "" {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "No token found"})
+	}
+	token, err := jwt.Parse(tokenStr, nil)
+	if err != nil || !token.Valid {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"success": false, "error": "Invalid token"})
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"success": false, "error": "Invalid token claims"})
+	}
+
+	userID, ok := claims["id"].(string)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token"})
+	}
+
+	// Store the user data in the Fiber context
+	c.Locals("user_id", userID)
+
+	return c.Next()
 }

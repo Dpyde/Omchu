@@ -5,24 +5,41 @@ import (
 
 	// Ensure this path is correct and the package exists
 	"github.com/gofiber/fiber/v2"
-	jwtware "github.com/gofiber/jwt/v3"
+	"github.com/golang-jwt/jwt/v4"
 )
 
 func Middleware(c *fiber.Ctx) error {
 	// Retrieve the token from the cookie
-	token := c.Cookies("token")
+	tokenString := c.Cookies("token")
 
 	// If there's no token in the cookie, return unauthorized
-	if token == "" {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"success": false, "error": "Token mueng mai mee wa"})
+	if tokenString == "" {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"success": false,
+			"error":   "Token mueng mai mee wa",
+		})
 	}
-	jwtMiddleware := jwtware.New(jwtware.Config{
-		SigningKey: []byte(os.Getenv("JWT_SECRET")), // Secret key for JWT signing and verification
+
+	// Retrieve JWT secret key
+	secret := os.Getenv("JWT_SECRET")
+	if secret == "" {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"success": false,
+			"error":   "JWT secret not configured",
+		})
+	}
+
+	// Parse and validate the JWT token
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		return []byte(secret), nil
 	})
 
-	// Validate the token
-	if err := jwtMiddleware(c); err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"success": false, "error": "Token mueng mai mee wa"})
+	// Check if the token is valid
+	if err != nil || !token.Valid {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"success": false,
+			"error":   "Token mueng mai mee wa",
+		})
 	}
 
 	// Send a new token and refresh the cookie (use your provided `sendNewTokenRespond` function)
