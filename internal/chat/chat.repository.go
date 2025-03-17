@@ -1,4 +1,4 @@
-package chatRep
+package chat
 
 import (
 	"github.com/Dpyde/Omchu/internal/entity"

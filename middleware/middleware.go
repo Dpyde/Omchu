@@ -8,7 +8,7 @@ import (
 	jwtware "github.com/gofiber/jwt/v3"
 )
 
-func AuthMiddleware(c *fiber.Ctx) error {
+func Middleware(c *fiber.Ctx) error {
 	// Retrieve the token from the cookie
 	token := c.Cookies("token")
 

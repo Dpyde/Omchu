@@ -1,4 +1,4 @@
-package userHndl
+package user
 
 import (
 	"fmt"
@@ -6,16 +6,15 @@ import (
 	"strconv"
 
 	"github.com/Dpyde/Omchu/internal/entity"
-	userSer "github.com/Dpyde/Omchu/internal/service/user"
 	"github.com/gofiber/fiber/v2"
 )
 
 // Primary adapter
 type HttpUserHandler struct {
-	service userSer.UserService
+	service UserService
 }
 
-func NewHttpUserHandler(service userSer.UserService) *HttpUserHandler {
+func NewHttpUserHandler(service UserService) *HttpUserHandler {
 	return &HttpUserHandler{service: service}
 }
 

@@ -1,8 +1,7 @@
-package swipeGormRep
+package swipe
 
 import (
 	"github.com/Dpyde/Omchu/internal/entity"
-	"github.com/Dpyde/Omchu/internal/repository/swipe"
 	"gorm.io/gorm"
 	"fmt"
 	"errors"
@@ -12,7 +11,7 @@ type GormSwipeRepository struct {
 	db *gorm.DB
 }
 
-func NewGormSwipeRepository(db *gorm.DB) swipeRep.SwipeRepository {
+func NewGormSwipeRepository(db *gorm.DB) SwipeRepository {
 	return &GormSwipeRepository{db: db}
 }
 

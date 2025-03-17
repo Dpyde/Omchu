@@ -1,18 +1,17 @@
 package route
 
 import (
-	swipeGormRep "github.com/Dpyde/Omchu/adapter/gorm/swipe"
-	swipeHndl "github.com/Dpyde/Omchu/adapter/http/swipe"
-	swipeSer "github.com/Dpyde/Omchu/internal/service/swipe"
+	"github.com/Dpyde/Omchu/internal/swipe"
+	"github.com/Dpyde/Omchu/middleware"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 )
 
 func SetupSwipeRoutes(app *fiber.App, db *gorm.DB) {
-	swipeRepo := swipeGormRep.NewGormSwipeRepository(db)
-	swipeService := swipeSer.NewSwipeService(swipeRepo)
-	swipeHandler := swipeHndl.NewHttpSwipeHandler(swipeService)
+	swipeRepo := swipe.NewGormSwipeRepository(db)
+	swipeService := swipe.NewSwipeService(swipeRepo)
+	swipeHandler := swipe.NewHttpSwipeHandler(swipeService)
 
 	swipesRoutes := app.Group("/swipe")
-	swipesRoutes.Post("/", swipeHandler.SwipeCheck)
+	swipesRoutes.Post("/", middleware.Middleware, swipeHandler.SwipeCheck)
 }
