@@ -1,6 +1,7 @@
 package route
 
 import (
+	"github.com/Dpyde/Omchu/internal/user"
 	middleware "github.com/Dpyde/Omchu/middleware"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
@@ -12,9 +13,9 @@ func SetupUserRoutes(app *fiber.App, db *gorm.DB) {
 	userHandler := user.NewHttpUserHandler(userService)
 
 	userRoutes := app.Group("/user")
-	userRoutes.Post("/", middleware.AuthMiddleware, userHandler.CreateUser)
-	userRoutes.Put("/:id", middleware.AuthMiddleware, userHandler.UpdateUser)
-	userRoutes.Delete("/:id", middleware.AuthMiddleware, userHandler.RemoveUser)
-	userRoutes.Get("/:id", middleware.AuthMiddleware, userHandler.FindByID)
-	userRoutes.Get("/swipe/:id", middleware.AuthMiddleware, userHandler.FindUsersToSwipe)
+	userRoutes.Post("/", middleware.Middleware, userHandler.CreateUser)
+	userRoutes.Put("/:id", middleware.Middleware, userHandler.UpdateUser)
+	userRoutes.Delete("/:id", middleware.Middleware, userHandler.RemoveUser)
+	userRoutes.Get("/:id", middleware.Middleware, userHandler.FindByID)
+	userRoutes.Get("/swipe/:id", middleware.Middleware, userHandler.FindUsersToSwipe)
 }

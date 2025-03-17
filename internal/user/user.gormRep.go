@@ -1,10 +1,9 @@
-package userGormRep
+package user
 
 import (
 	"errors"
 
 	"github.com/Dpyde/Omchu/internal/entity"
-	userRep "github.com/Dpyde/Omchu/internal/repository/user"
 	"gorm.io/gorm"
 )
 
@@ -15,7 +14,7 @@ type GormUserRepository struct {
 	db *gorm.DB
 }
 
-func NewGormUserRepository(db *gorm.DB) userRep.UserRepository {
+func NewGormUserRepository(db *gorm.DB) UserRepository {
 	return &GormUserRepository{db: db}
 }
 

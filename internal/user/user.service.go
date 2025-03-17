@@ -1,9 +1,8 @@
-package userSer
+package user
 
 import (
-	"github.com/Dpyde/Omchu/internal/entity"
-	userRep "github.com/Dpyde/Omchu/internal/repository/user" // Ensure this path is correct and the package exists
-	authSer "github.com/Dpyde/Omchu/internal/service/auth"    // Ensure this path is correct and the package exists
+	"github.com/Dpyde/Omchu/internal/auth"
+	"github.com/Dpyde/Omchu/internal/entity" // Ensure this path is correct and the package exists
 )
 
 // primary port
@@ -19,15 +18,15 @@ type UserService interface {
 }
 
 type userServiceImpl struct {
-	repo userRep.UserRepository
+	repo UserRepository
 }
 
-func NewUserService(repo userRep.UserRepository) UserService {
+func NewUserService(repo UserRepository) UserService {
 	return &userServiceImpl{repo: repo}
 }
 
 func (s *userServiceImpl) CreateUser(user entity.User) (*entity.User, error) {
-	hashedPassword, err := authSer.HashPassword(user.Password)
+	hashedPassword, err := auth.HashPassword(user.Password)
 	if err != nil {
 		return nil, err
 	}
