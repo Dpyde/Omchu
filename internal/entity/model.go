@@ -27,6 +27,7 @@ type Message struct {
 	SenderID uint
 	ChatID   uint
 	Text     string
+	Read    bool
 }
 
 type Picture struct {
