@@ -1,8 +1,7 @@
-package chatSer
+package chat
 
 import (
 	"github.com/Dpyde/Omchu/internal/entity"
-	chatRep "github.com/Dpyde/Omchu/internal/repository/chat"
 )
 
 type ChatService interface {
@@ -10,10 +9,10 @@ type ChatService interface {
 }
 
 type chatServiceImpl struct {
-	repo chatRep.ChatRepository
+	repo ChatRepository
 }
 
-func NewChatService(repo chatRep.ChatRepository) ChatService {
+func NewChatService(repo ChatRepository) ChatService {
 	return &chatServiceImpl{repo: repo}
 }
 
