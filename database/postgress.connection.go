@@ -59,7 +59,7 @@ func InitDatabase() (db *gorm.DB, err error) {
 	newUser := entity.User{Name: "John Doe", Age: 12, Email: "myemail", Color: "blue", Password: "password", Swipes: []entity.Swipe{newSwipe}}
 	db.Create(&newUser)
 	db.Create(&newUser2)
-	newChat := entity.Chat{Users: []entity.User{newUser, newUser2}, Messages: []entity.Message{newMessage}}
+	newChat := entity.Chat{Users: []entity.User{newUser, newUser2}, Messages: []entity.Message{}}
 	db.Create(&newChat)
 
 	// newChat := entity.Chat{Users: []entity.User{newUser,newUser2}, Messages: []entity.Message{newMessage}}
