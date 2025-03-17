@@ -1,16 +1,15 @@
-package swipeHndl
+package swipe
 
 import (
 	"github.com/Dpyde/Omchu/internal/entity"
-	"github.com/Dpyde/Omchu/internal/service/swipe"
 	"github.com/gofiber/fiber/v2"
 )
 
 type HtttSwipeHandler struct {
-	service swipeSer.SwipeService
+	service SwipeService
 }
 
-func NewHttpSwipeHandler(service swipeSer.SwipeService) *HtttSwipeHandler {
+func NewHttpSwipeHandler(service SwipeService) *HtttSwipeHandler {
 	return &HtttSwipeHandler{service: service}
 }
 

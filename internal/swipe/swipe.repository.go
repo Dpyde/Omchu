@@ -1,4 +1,4 @@
-package swipeRep
+package swipe
 
 import (
 	"github.com/Dpyde/Omchu/internal/entity"
