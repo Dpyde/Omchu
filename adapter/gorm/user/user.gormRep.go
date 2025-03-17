@@ -10,7 +10,16 @@ import (
 
 // Secondary adapter
 type GormUserRepository struct {
+	userRep "github.com/Dpyde/Omchu/internal/repository/user"
+	"gorm.io/gorm"
+)
+
+// Secondary adapter
+type GormUserRepository struct {
 	db *gorm.DB
+}
+
+func NewGormUserRepository(db *gorm.DB) userRep.UserRepository {
 }
 
 func NewGormUserRepository(db *gorm.DB) userRep.UserRepository {
@@ -81,4 +90,6 @@ func (r *GormUserRepository) Remove(id uint) error {
 		return err
 	}
 	return nil
+}
+
 }

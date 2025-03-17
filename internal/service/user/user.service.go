@@ -7,6 +7,7 @@ import (
 )
 
 // primary port
+// primary port
 type UserService interface {
 	CreateUser(user entity.User) (*entity.User, error)
 	FindUsersToSwipe(id uint) (*[]entity.User, error)
@@ -19,6 +20,9 @@ type UserService interface {
 
 type userServiceImpl struct {
 	repo userRep.UserRepository
+}
+
+func NewUserService(repo userRep.UserRepository) UserService {
 }
 
 func NewUserService(repo userRep.UserRepository) UserService {
@@ -78,4 +82,6 @@ func (s *userServiceImpl) RemoveUser(id uint) error {
 		return err
 	}
 	return nil
+}
+
 }
