@@ -23,11 +23,6 @@ const (
 	user     = "myuser"     // as defined in docker-compose.yml
 	password = "mypassword" // as defined in docker-compose.yml
 	dbname   = "mydatabase" // as defined in docker-compose.yml
-	host     = "localhost"  // or the Docker service name if running in another container
-	port     = 5432         // default PostgreSQL port
-	user     = "myuser"     // as defined in docker-compose.yml
-	password = "mypassword" // as defined in docker-compose.yml
-	dbname   = "mydatabase" // as defined in docker-compose.yml
 )
 
 func main() {
@@ -39,13 +34,8 @@ func main() {
 	}
 	fmt.Println("Database connected")
 	// Configure your PostgreSQL database details here
-	app := fiber.New()
-	db, err := database.InitDatabase()
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("Database connected")
 
+	route.SetupChatRoutes(app, db)
 	route.SetupUserRoutes(app, db)
 	route.SetupAuthRoutes(app, db)
 	route.SetupSwipeRoutes(app, db)

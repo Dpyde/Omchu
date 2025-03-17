@@ -1,4 +1,4 @@
-package service
+package auth
 
 import (
 	"errors"
@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/Dpyde/Omchu/internal/entity"
-	authRep "github.com/Dpyde/Omchu/internal/repository/auth"
 
 	jwt "github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
@@ -18,10 +17,10 @@ type AuthService interface {
 }
 
 type authServiceImpl struct {
-	repo authRep.AuthRepository
+	repo AuthRepository
 }
 
-func NewAuthService(repo authRep.AuthRepository) AuthService {
+func NewAuthService(repo AuthRepository) AuthService {
 	return &authServiceImpl{repo: repo}
 }
 

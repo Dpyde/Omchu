@@ -1,4 +1,4 @@
-package userRep
+package auth
 
 import "github.com/Dpyde/Omchu/internal/entity"
 

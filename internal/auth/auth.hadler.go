@@ -1,4 +1,4 @@
-package authHndl
+package auth
 
 import (
 	"os"
@@ -6,15 +6,14 @@ import (
 	"time"
 
 	"github.com/Dpyde/Omchu/internal/entity"
-	authSer "github.com/Dpyde/Omchu/internal/service/auth"
 	"github.com/gofiber/fiber/v2"
 )
 
 type HttpAuthHandler struct {
-	service authSer.AuthService
+	service AuthService
 }
 
-func NewHttpAuthHandler(service authSer.AuthService) *HttpAuthHandler {
+func NewHttpAuthHandler(service AuthService) *HttpAuthHandler {
 	return &HttpAuthHandler{service: service}
 }
 
@@ -48,7 +47,7 @@ func (h *HttpAuthHandler) Register(c *fiber.Ctx) error {
 
 // Note: This function is not part of the original code snippet
 func SendTokenResponse(c *fiber.Ctx, user entity.User, statusCode int) error {
-	token, err := authSer.GenerateToken(strconv.FormatInt(int64(user.ID), 10))
+	token, err := GenerateToken(strconv.FormatInt(int64(user.ID), 10))
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"success": false,

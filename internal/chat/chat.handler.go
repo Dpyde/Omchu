@@ -1,17 +1,16 @@
-package chatHandlr
+package chat
 
 import (
 	"fmt"
 
-	chatSer "github.com/Dpyde/Omchu/internal/service/chat"
 	"github.com/gofiber/fiber/v2"
 )
 
 type HttpChatHandler struct {
-	service chatSer.ChatService
+	service ChatService
 }
 
-func NewHttpChatHandler(service chatSer.ChatService) *HttpChatHandler {
+func NewHttpChatHandler(service ChatService) *HttpChatHandler {
 	return &HttpChatHandler{service: service}
 }
 

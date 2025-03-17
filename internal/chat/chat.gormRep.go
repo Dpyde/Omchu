@@ -1,8 +1,7 @@
-package chatGormRep
+package chat
 
 import (
 	"github.com/Dpyde/Omchu/internal/entity"
-	chatRep "github.com/Dpyde/Omchu/internal/repository/chat"
 	"gorm.io/gorm"
 )
 
@@ -10,7 +9,7 @@ type GormChatRepository struct {
 	db *gorm.DB
 }
 
-func NewGormChatRepository(db *gorm.DB) chatRep.ChatRepository {
+func NewGormChatRepository(db *gorm.DB) ChatRepository {
 	return &GormChatRepository{db: db}
 }
 

@@ -1,12 +1,10 @@
 package database
 
 import (
-import (
 	"fmt"
 	"log"
 	"os"
 	"time"
-
 
 	"github.com/Dpyde/Omchu/internal/entity"
 	"gorm.io/driver/postgres"
@@ -24,10 +22,6 @@ func InitDatabase() (db *gorm.DB, err error) {
 	)
 	//to config later
 	dsn := fmt.Sprintf("host=%s port=%d user=%s "+
-		"password=%s dbname=%s sslmode=disable",
-		host, port, user, password, dbname)
-
-	// New logger for detailed SQL logging
 		"password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
 
@@ -58,7 +52,6 @@ func InitDatabase() (db *gorm.DB, err error) {
 		return nil, err
 	}
 
-
 	// initialize the database with some data
 	//newMessage := entity.Message{SenderID: 1,Text: "Hello World!"}
 
@@ -74,4 +67,3 @@ func InitDatabase() (db *gorm.DB, err error) {
 	// db.Create(&newChat)
 	return
 }
-

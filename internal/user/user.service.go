@@ -23,9 +23,6 @@ type userServiceImpl struct {
 }
 
 func NewUserService(repo userRep.UserRepository) UserService {
-}
-
-func NewUserService(repo userRep.UserRepository) UserService {
 	return &userServiceImpl{repo: repo}
 }
 
@@ -82,6 +79,4 @@ func (s *userServiceImpl) RemoveUser(id uint) error {
 		return err
 	}
 	return nil
-}
-
 }

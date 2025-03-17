@@ -1,10 +1,10 @@
-package authGormRep
+package auth
 
 import (
 	"errors"
 
+	// authRep "github.com/Dpyde/Omchu/internal/"
 	"github.com/Dpyde/Omchu/internal/entity"
-	authRep "github.com/Dpyde/Omchu/internal/repository/auth"
 	"gorm.io/gorm"
 )
 
@@ -12,7 +12,7 @@ type GormAuthRepository struct {
 	db *gorm.DB
 }
 
-func NewGormAuthRepository(db *gorm.DB) authRep.AuthRepository {
+func NewGormAuthRepository(db *gorm.DB) AuthRepository {
 	return &GormAuthRepository{db: db}
 }
 
