@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 
 	// authGormRep "github.com/Dpyde/Omchu/adapter/gorm/auth"
 	// userGormRep "github.com/Dpyde/Omchu/adapter/gorm/user"
@@ -15,6 +16,7 @@ import (
 	"github.com/Dpyde/Omchu/database"
 	"github.com/Dpyde/Omchu/route"
 	"github.com/gofiber/fiber/v2"
+	"github.com/joho/godotenv"
 )
 
 const (
@@ -32,7 +34,13 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	err = godotenv.Load()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	fmt.Println("Database connected")
+	fmt.Println(os.Getenv("JWT_SECRET"))
 	// Configure your PostgreSQL database details here
 
 	route.SetupChatRoutes(app, db)

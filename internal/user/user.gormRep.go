@@ -26,18 +26,18 @@ func (r *GormUserRepository) CreateUser(user *entity.User) (*entity.User, error)
 	return user, nil
 }
 func (r *GormUserRepository) FindUsersToSwipe(id uint) (*[]entity.User, error) {
-	var user entity.User
-	if err := r.db.First(&user, id).Error; err != nil {
+	var users []entity.User
+	swiped := r.db.Model(&entity.Swipe{}).
+		Select("swiped_id").
+		Where("swiper_id = ?", id)
+	err := r.db.
+		Where("id != ?", id).
+		Where("id NOT IN (?)", swiped).
+		Find(&users).Error
+
+	if err != nil {
 		return nil, err
 	}
-	swiped := r.db.Model(&entity.Swipe{}).
-		Select("SwipedID").
-		Where("SwiperID = ?", id)
-	var users []entity.User
-	r.db.Where("id != ?", id).
-		Where("id NOT IN (?)", swiped).
-		Find(&users)
-
 	return &users, nil
 }
 

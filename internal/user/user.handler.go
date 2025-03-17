@@ -42,6 +42,7 @@ func (h *HttpUserHandler) FindUsersToSwipe(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"success": false, "error": "invalid user ID"})
 	}
 	users, err := h.service.FindUsersToSwipe(uint(id))
+	// fmt.Println("checkPoint1")
 	if err != nil {
 		// Return an appropriate error message and status code
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"success": false, "error": err.Error()})

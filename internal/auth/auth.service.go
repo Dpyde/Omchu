@@ -58,6 +58,20 @@ func (s *authServiceImpl) Register(username string, email string, password strin
 	}
 	return newUser, nil
 }
+func ReToken(token string) (uint, error) {
+	secret := os.Getenv("JWT_SECRET")
+	t, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
+		return []byte(secret), nil
+	})
+	if err != nil {
+		return 0, err
+	}
+	claims, ok := t.Claims.(jwt.MapClaims)
+	if !ok || !t.Valid {
+		return 0, errors.New("invalid token")
+	}
+	return uint(claims["id"].(float64)), nil
+}
 
 // NOTE: The following functions are not used in the current implementation
 func HashPassword(password string) (string, error) {
