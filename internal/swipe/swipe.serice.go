@@ -1,10 +1,9 @@
-package swipeSer
+package swipe
 
 import (
 	"errors"
 
 	"github.com/Dpyde/Omchu/internal/entity"
-	"github.com/Dpyde/Omchu/internal/repository/swipe"
 )
 
 //primary port
@@ -13,10 +12,10 @@ type SwipeService interface {
 }
 
 type swipeServiceImpl struct {
-	repo swipeRep.SwipeRepository
+	repo SwipeRepository
 }
 
-func NewSwipeService(repo swipeRep.SwipeRepository) SwipeService {
+func NewSwipeService(repo SwipeRepository) SwipeService {
 	return &swipeServiceImpl{repo: repo}
 }
 
