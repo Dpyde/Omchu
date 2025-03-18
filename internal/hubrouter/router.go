@@ -1,4 +1,4 @@
-package router
+package hubrouter
 
 import (
 	"github.com/Dpyde/Omchu/internal/ws"
