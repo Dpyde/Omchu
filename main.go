@@ -56,5 +56,4 @@ func main() {
 	hubrouter.InitRouter(WsHandler)
 	// Start the server
 	hubrouter.Start("127.0.0.1:8080")
-
 }
