@@ -46,6 +46,7 @@ func main() {
 	route.SetupUserRoutes(app, db)
 	route.SetupAuthRoutes(app, db)
 	route.SetupSwipeRoutes(app, db)
+	route.SetupMessageRoute(app, db)
 	go app.Listen(":8000")
 
 	hub := ws.NewHub()
