@@ -15,6 +15,8 @@ import (
 	"github.com/Dpyde/Omchu/database"
 	"github.com/Dpyde/Omchu/route"
 	"github.com/gofiber/fiber/v2"
+	"github.com/Dpyde/Omchu/internal/router"
+	"github.com/Dpyde/Omchu/internal/ws"
 )
 
 const (
@@ -39,7 +41,14 @@ func main() {
 	route.SetupUserRoutes(app, db)
 	route.SetupAuthRoutes(app, db)
 	route.SetupSwipeRoutes(app, db)
+	go app.Listen(":8000")
 
-	// Start the server
-	app.Listen(":8000")
+	hub := ws.NewHub()
+	WsHandler := ws.NewHandler(hub)
+	go hub.Run(db)
+
+	router.InitRouter(WsHandler)
+		// Start the server
+	router.Start("127.0.0.1:8080")
+
 }
