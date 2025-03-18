@@ -2,7 +2,7 @@ package route
 
 import (
 	"github.com/Dpyde/Omchu/internal/chat"
-	"github.com/Dpyde/Omchu/middleware"
+	middleware "github.com/Dpyde/Omchu/middleware"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 )
@@ -15,5 +15,4 @@ func SetupChatRoutes(app *fiber.App, db *gorm.DB) {
 	chatRoutes := app.Group("/chat")
 	chatRoutes.Use(middleware.Middleware)
 	chatRoutes.Get("/:id", chatHandler.GetChat)
-	// chatRoutes.Post("/", chatHandler.CreateChat)
 }

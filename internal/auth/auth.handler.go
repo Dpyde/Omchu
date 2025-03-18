@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type HttpAuthHandler struct {
@@ -90,4 +91,32 @@ func RetrieveTokenRequest(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"success": false, "error": "invalid token"})
 	}
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"success": true, "id": id})
+}
+
+func ExtractUserFromJWT(c *fiber.Ctx) error {
+
+	// Extract the token from the Fiber context (inserted by the JWT middleware)
+	tokenStr := c.Cookies("token")
+	if tokenStr == "" {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "No token found"})
+	}
+	token, err := jwt.Parse(tokenStr, nil)
+	if err != nil || !token.Valid {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"success": false, "error": "Invalid token"})
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"success": false, "error": "Invalid token claims"})
+	}
+
+	userID, ok := claims["id"].(string)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token"})
+	}
+
+	// Store the user data in the Fiber context
+	c.Locals("user_id", userID)
+
+	return c.Next()
 }

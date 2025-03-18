@@ -27,6 +27,7 @@ type Message struct {
 	SenderID uint
 	ChatID   uint
 	Text     string
+	Read     bool `gorm:"default:false"`
 }
 
 type Picture struct {
@@ -36,7 +37,6 @@ type Picture struct {
 }
 
 type Swipe struct {
-	gorm.Model
 	SwiperID uint `gorm:"primaryKey"`
 	SwipedID uint `gorm:"primaryKey"`
 	Liked    bool
