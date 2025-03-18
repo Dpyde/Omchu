@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	auth "github.com/Dpyde/Omchu/internal/auth"
 	"github.com/Dpyde/Omchu/internal/entity"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -54,16 +55,16 @@ func InitDatabase() (db *gorm.DB, err error) {
 
 	// initialize the database with some data
 	//newMessage := entity.Message{SenderID: 1,Text: "Hello World!"}
-
+	password1, err := auth.HashPassword("password")
 	newUser2 := entity.User{Name: "Jane Doe", Age: 18, Email: "myemail2", Color: "blue", Password: "password2"}
 	newSwipe := entity.Swipe{SwiperID: 1, SwipedID: 2, Liked: true}
-	newUser := entity.User{Name: "John Doe", Age: 12, Email: "myemail", Color: "blue", Password: "password", Swipes: []entity.Swipe{newSwipe}}
+	newUser := entity.User{Name: "John Doe", Age: 12, Email: "myemail", Color: "blue", Password: password1, Swipes: []entity.Swipe{newSwipe}}
 	db.Create(&newUser)
 	db.Create(&newUser2)
 	newChat := entity.Chat{Users: []entity.User{newUser, newUser2}, Messages: []entity.Message{}}
 	db.Create(&newChat)
 
 	// newChat := entity.Chat{Users: []entity.User{newUser,newUser2}, Messages: []entity.Message{newMessage}}
-	// db.Create(&newChat)
+	// db.Create(&newChat)s
 	return
 }

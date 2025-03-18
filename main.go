@@ -15,6 +15,7 @@ import (
 	"github.com/Dpyde/Omchu/database"
 	"github.com/Dpyde/Omchu/route"
 	"github.com/gofiber/fiber/v2"
+	"github.com/joho/godotenv"
 )
 
 const (

@@ -15,10 +15,13 @@ func NewHttpMessageHandler(service MessageService) *HttpMessageHandler {
 
 func (h *HttpMessageHandler) GetMessage(c *fiber.Ctx) error {
 	chatId := c.Params("chatId")
-	UserId := c.Locals("UserId").(string)
+	UserId, ok := c.Locals("UserId").(string)
+	if !ok {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "UserId not found in context"})
+	}
 	messages, err := h.service.GetMessage(chatId, UserId)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err})
 	}
 	return c.Status(fiber.StatusOK).JSON(messages)
 }

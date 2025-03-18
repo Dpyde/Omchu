@@ -15,6 +15,5 @@ func SetUpMessageRoute(app *fiber.App, db *gorm.DB) {
 	messageRoutes := app.Group("/message")
 	messageRoutes.Use(middleware.Middleware)
 	messageRoutes.Get("/:chatId", messageHandler.GetMessage)
-	messageRoutes.Use(middleware.Middleware)
 	messageRoutes.Post("/", messageHandler.SendMessage)
 }

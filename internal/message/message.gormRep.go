@@ -15,19 +15,13 @@ func NewGormMessageRepository(db *gorm.DB) MessageRepository {
 
 func (r *GormMessageRepository) GetMessage(chatId string, userId string) ([]entity.Message, error) {
 	var messages []entity.Message
-	err := r.db
-		.Where("chatID = ?", chatId)
-		.Find(&messages).Error
+	err := r.db.Where("chatID = ?", chatId).Find(&messages).Error
 	if err != nil {
 		return []entity.Message{}, err
 	}
-	for _, message := range messages {
-		if message.UserID != userId {
-			message.Read = true
-			r.db.Save(&message)
-		}
-	}
-
+	r.db.Model(&entity.Message{}).
+		Where("chatID = ? AND userID != ? AND read = ?", chatId, userId, false).
+		Update("read", true)
 	return messages, nil
 }
 
