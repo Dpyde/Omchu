@@ -85,4 +85,5 @@ require (
 	google.golang.org/protobuf v1.36.1 // indirect
 	gorm.io/driver/postgres v1.5.11 // indirect
 	gorm.io/gorm v1.25.12 // indirect
+// github.com/stretchr/testify v1.8.0 // indirect
 )

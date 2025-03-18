@@ -66,12 +66,9 @@ func (h *HttpPictureHandler) UploadPics(c *fiber.Ctx) error {
 }
 
 func (h *HttpPictureHandler) GetPicsByUserId(c *fiber.Ctx) error {
-	var id uint
-	if err := c.BodyParser(id); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"success": false, "error": "invalid request"})
-	}
-
-	pictures, err := h.service.GetPicsByUserId(id)
+	idStr := c.Params("id")
+	id, err := strconv.ParseUint(idStr, 10, 32)
+	pictures, err := h.service.GetPicsByUserId(uint(id))
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"success": false, "error": "failed to get Pictures from database"})
 	}

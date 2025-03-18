@@ -13,6 +13,7 @@ func SetupChatRoutes(app *fiber.App, db *gorm.DB) {
 	chatHandler := chat.NewHttpChatHandler(chatService)
 
 	chatRoutes := app.Group("/chat")
+	chatRoutes.Use(middleware.Middleware)
+	chatRoutes.Get("/:id", chatHandler.GetChat)
 	// chatRoutes.Post("/", chatHandler.CreateChat)
-	chatRoutes.Get("/:id", middleware.Middleware, chatHandler.GetChat)
 }

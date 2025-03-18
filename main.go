@@ -30,9 +30,9 @@ func main() {
 		log.Fatal(err1)
 	}
 
-	picture.InitR2()
-
 	fmt.Println("Database connected")
+	picture.InitR2()
+	fmt.Println("Cloud connect")
 	// Configure your PostgreSQL database details here
 
 	route.SetupPictureRoutes(app, db)
@@ -40,32 +40,6 @@ func main() {
 	route.SetupUserRoutes(app, db)
 	route.SetupAuthRoutes(app, db)
 	route.SetupSwipeRoutes(app, db)
-	// app.Post("/test", image.TestSend)
-	// Endpoint to upload image
-	// app.Post("/upload", func(c *fiber.Ctx) error {
-	// 	fileHeader, err := c.FormFile("file")
-	// 	if err != nil {
-	// 		return c.Status(fiber.StatusBadRequest).SendString("Failed to get file")
-	// 	}
 
-	// 	fileURL, fileKey, err := cloudflare.UploadFileToR2(fileHeader, os.Getenv("BUCKET_NAME"))
-	// 	if err != nil {
-	// 		return c.Status(fiber.StatusInternalServerError).SendString("Failed to upload file")
-	// 	}
-
-	// 	// Save picture details to the database
-	// 	picture := entity.Picture{
-	// 		UserID: 1, // Replace with the actual user ID
-	// 		Url:    fileURL,
-	// 		Key:    fileKey,
-	// 	}
-	// 	if err := db.Create(&picture).Error; err != nil {
-	// 		return c.Status(fiber.StatusInternalServerError).SendString("Failed to save picture details")
-	// 	}
-
-	// 	return c.SendString("File uploaded and saved successfully")
-	// })
-
-	// Start the server
 	app.Listen(":8000")
 }
