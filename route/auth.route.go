@@ -14,4 +14,5 @@ func SetupAuthRoutes(app *fiber.App, db *gorm.DB) {
 	authRoutes := app.Group("/auth")
 	authRoutes.Post("/login", authHandler.Login)
 	authRoutes.Post("/register", authHandler.Register)
+	// authRoutes.Get("/token", authHandler.RetrieveTokenRequest)
 }

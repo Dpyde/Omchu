@@ -83,7 +83,7 @@ func SendTokenResponse(c *fiber.Ctx, id uint, statusCode int) error {
 	})
 }
 
-func RetrieveTokenRespond(c *fiber.Ctx) error {
+func RetrieveTokenRequest(c *fiber.Ctx) error {
 	cookie := c.Cookies("token")
 	id, err := TokenToId(cookie)
 	if err != nil {

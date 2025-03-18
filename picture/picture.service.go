@@ -16,9 +16,9 @@ import (
 
 type PictureService interface {
 	// UploadPicToR2(fileHeader multipart.FileHeader, bucketName string) (entity.Picture, error)
-	UploadPicToR2(fileHeader *multipart.FileHeader, bucketName string) (entity.Picture, error)
+	UploadPicsToR2(fileHeader []*multipart.FileHeader, bucketName string) ([]entity.Picture, error)
 	SavePicturesSer(id uint, picture []entity.Picture) error
-	GetPicturesByUserId(id uint) ([]entity.Picture, error)
+	GetPicsByUserId(id uint) ([]entity.Picture, error)
 }
 
 type pictureServiceImpl struct {
@@ -58,88 +58,48 @@ func InitR2() {
 	log.Println("✅ Cloudflare R2 Client Initialized")
 }
 
-// func (s *pictureServiceImpl) UploadPicsToR2(fileHeaders []*multipart.FileHeader, bucketName string) ([]entity.Picture, error) {
-// 	var pictures []entity.Picture
+func (s *pictureServiceImpl) UploadPicsToR2(fileHeaders []*multipart.FileHeader, bucketName string) ([]entity.Picture, error) {
+	var pictures []entity.Picture
 
-// 	for _, fileHeader := range fileHeaders {
-// 		// Open the file
-// 		file, err := fileHeader.Open()
-// 		if err != nil {
-// 			log.Printf("Failed to open file: %v", err)
-// 			return nil, err
-// 		}
-// 		defer file.Close()
+	for _, fileHeader := range fileHeaders {
+		// Open the file
+		file, err := fileHeader.Open()
+		if err != nil {
+			log.Printf("Failed to open file: %v", err)
+			return nil, err
+		}
+		defer file.Close()
 
-// 		// Generate a unique file key
-// 		fileKey := fmt.Sprintf("%d-%s", time.Now().Unix(), fileHeader.Filename)
+		// Generate a unique file key
+		fileKey := fmt.Sprintf("%d-%s", time.Now().Unix(), fileHeader.Filename)
 
-// 		// Upload the file to Cloudflare R2
-// 		_, err = R2Client.PutObject(
-// 			context.Background(),
-// 			bucketName,
-// 			fileKey,
-// 			file,
-// 			fileHeader.Size,
-// 			minio.PutObjectOptions{ContentType: fileHeader.Header.Get("Content-Type")},
-// 		)
-// 		if err != nil {
-// 			log.Printf("Failed to upload file: %v", err)
-// 			return nil, err
-// 		}
+		// Upload the file to Cloudflare R2
+		_, err = R2Client.PutObject(
+			context.Background(),
+			bucketName,
+			fileKey,
+			file,
+			fileHeader.Size,
+			minio.PutObjectOptions{ContentType: fileHeader.Header.Get("Content-Type")},
+		)
+		if err != nil {
+			log.Printf("Failed to upload file: %v", err)
+			return nil, err
+		}
 
-// 		log.Println("File uploaded successfully:", fileKey)
+		log.Println("File uploaded successfully:", fileKey)
 
-// 		// Construct the file URL
-// 		fileURL := fmt.Sprintf("https://%s.r2.cloudflarestorage.com/%s/%s", os.Getenv("ACCOUNT_ID"), bucketName, fileKey)
+		// Construct the file URL
+		fileURL := fmt.Sprintf("https://%s.r2.cloudflarestorage.com/%s/%s", os.Getenv("ACCOUNT_ID"), bucketName, fileKey)
 
-// 		// Append the uploaded file info to the slice
-// 		pictures = append(pictures, entity.Picture{
-// 			Url: fileURL,
-// 			Key: fileKey,
-// 		})
-// 	}
-
-// 	return pictures, nil
-// }
-
-func (s *pictureServiceImpl) UploadPicToR2(fileHeader *multipart.FileHeader, bucketName string) (entity.Picture, error) {
-	// Open the file
-	file, err := fileHeader.Open()
-	if err != nil {
-		log.Printf("Failed to open file: %v", err)
-		return entity.Picture{}, err
-	}
-	defer file.Close()
-
-	// Generate a unique file key
-	fileKey := fmt.Sprintf("%d-%s", time.Now().Unix(), fileHeader.Filename)
-
-	// Upload the file to Cloudflare R2
-	_, err = R2Client.PutObject(
-		context.Background(),
-		bucketName,
-		fileKey,
-		file,
-		fileHeader.Size,
-		minio.PutObjectOptions{ContentType: fileHeader.Header.Get("Content-Type")},
-	)
-	if err != nil {
-		log.Printf("Failed to upload file: %v", err)
-		return entity.Picture{}, err
+		// Append the uploaded file info to the slice
+		pictures = append(pictures, entity.Picture{
+			Url: fileURL,
+			Key: fileKey,
+		})
 	}
 
-	log.Println("File uploaded successfully:", fileKey)
-
-	// Construct the file URL
-	fileURL := fmt.Sprintf("https://%s.r2.cloudflarestorage.com/%s/%s", os.Getenv("ACCOUNT_ID"), bucketName, fileKey)
-
-	// Return the uploaded file info
-	picture := entity.Picture{
-		Url: fileURL,
-		Key: fileKey,
-	}
-
-	return picture, nil
+	return pictures, nil
 }
 
 func (s *pictureServiceImpl) SavePicturesSer(userID uint, pictures []entity.Picture) error {
@@ -149,7 +109,7 @@ func (s *pictureServiceImpl) SavePicturesSer(userID uint, pictures []entity.Pict
 	return s.repo.SavePicturesToDB(pictures)
 }
 
-func (s *pictureServiceImpl) GetPicturesByUserId(id uint) ([]entity.Picture, error) {
+func (s *pictureServiceImpl) GetPicsByUserId(id uint) ([]entity.Picture, error) {
 	pictures, err := s.repo.GetPictureFromDB(id)
 	if err != nil {
 		return nil, err

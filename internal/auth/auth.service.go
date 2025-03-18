@@ -15,6 +15,7 @@ import (
 type AuthService interface {
 	Register(username string, email string, password string, age uint) (*entity.User, error)
 	Login(email string, password string) (*entity.User, error)
+	// TokenToId(token string) (string, error)
 }
 
 type authServiceImpl struct {

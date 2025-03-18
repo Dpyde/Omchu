@@ -19,8 +19,6 @@ func SetupPictureRoutes(app *fiber.App, db *gorm.DB) {
 	PicturesRoutes.Use(middleware.Middleware)
 	// PicturesRoutes.Post("/", PictureHandler.UploadPictures)
 	// PicturesRoutes.Get("/:id", PictureHandler.GetPicture)
-	PicturesRoutes.Post("/:id", func(c *fiber.Ctx) error {
-		fmt.Println("UploadPictures route hit!") // Log to confirm if the route is being hit
-		return PictureHandler.UploadPicture(c)
-	})
+	PicturesRoutes.Post("/:id", PictureHandler.UploadPics)
+	PicturesRoutes.Get("/:id", PictureHandler.GetPicsByUserId)
 }
