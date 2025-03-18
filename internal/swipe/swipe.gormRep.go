@@ -5,6 +5,9 @@ import (
 	"gorm.io/gorm"
 	"fmt"
 	"errors"
+	"bytes"
+	"io"
+	"net/http"
 )
 
 type GormSwipeRepository struct {
@@ -44,8 +47,31 @@ func (r *GormSwipeRepository) Pud(swipe *entity.Swipe,is_match *bool) error {
 			return err
 		}
 		*is_match = true
-		fmt.Println("Chat created");
-	}
 
+		fmt.Println("Chat created");
+		
+		url := "http://127.0.0.1:8080/ws/createRoom"
+		data := fmt.Sprintf(`{ 
+					"id":"%d",
+					"name":"Chat %d"
+				}`, chat.ID, chat.ID)
+		reqBody := bytes.NewBufferString(data)
+
+		resp, err := http.Post(url, "application/json", reqBody)
+		if err != nil {
+			fmt.Println("Error:", err)
+			return err
+		}
+		defer resp.Body.Close()
+
+		body, err := io.ReadAll(resp.Body)
+		if err != nil {
+			fmt.Println("Error reading response:", err)
+			return err
+		}
+
+		fmt.Println(string(body))
+		
+	}
 	return nil
 }
