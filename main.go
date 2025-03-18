@@ -13,7 +13,7 @@ import (
 	// userSer "github.com/Dpyde/Omchu/internal/service/user"
 	// middleware "github.com/Dpyde/Omchu/middleware"
 	"github.com/Dpyde/Omchu/database"
-	"github.com/Dpyde/Omchu/internal/hubrouter"
+	"github.com/Dpyde/Omchu/hubrouter"
 	"github.com/Dpyde/Omchu/internal/ws"
 	"github.com/Dpyde/Omchu/route"
 	"github.com/gofiber/fiber/v2"
