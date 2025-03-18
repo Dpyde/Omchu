@@ -98,18 +98,3 @@ func (r *GormUserRepository) Remove(id uint) error {
 	}
 	return nil
 }
-
-// func (r *GormUserRepository) FindByUsernameGORM(username string) (*entity.User, error) {
-// 	var user entity.User
-// 	if err := r.db.Where("username = ?", username).First(&user).Error; err != nil {
-// 		return nil, errors.New("user not found")
-// 	}
-// 	return &user, nil
-// }
-// func (r *GormUserRepository) FindByEmailGORM(email string) (*entity.User, error) {
-// 	var user entity.User
-// 	if err := r.db.Where("email = ?", email).First(&user).Error; err != nil {
-// 		return nil, errors.New("user not found")
-// 	}
-// 	return &user, nil
-// }
