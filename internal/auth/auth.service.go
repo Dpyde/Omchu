@@ -5,6 +5,7 @@ import (
 	"os"
 	"regexp"
 	"time"
+	"unicode"
 
 	"github.com/Dpyde/Omchu/internal/entity"
 
@@ -30,14 +31,13 @@ func constraintCheck(email string, password string, age uint) error {
 	var emailRegex = regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
 
 	// Password rules: At least 8 characters, one uppercase, one lowercase, one number
-	var passwordRegex = regexp.MustCompile(`^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$`)
 	// Validate email
 	if !emailRegex.MatchString(email) {
 		return errors.New("invalid email format")
 	}
 
 	// Validate password
-	if !passwordRegex.MatchString(password) {
+	if !isValidPassword(password) {
 		return errors.New("password must be at least 8 characters, include one uppercase, one lowercase, and one number")
 	}
 	if age < 18 {
@@ -45,6 +45,25 @@ func constraintCheck(email string, password string, age uint) error {
 	}
 
 	return nil
+}
+func isValidPassword(password string) bool {
+	if len(password) < 8 {
+		return false
+	}
+
+	hasUpper, hasLower, hasDigit := false, false, false
+	for _, char := range password {
+		switch {
+		case unicode.IsLower(char):
+			hasLower = true
+		case unicode.IsUpper(char):
+			hasUpper = true
+		case unicode.IsDigit(char):
+			hasDigit = true
+		}
+	}
+
+	return hasUpper && hasLower && hasDigit
 }
 func (s *authServiceImpl) Login(email string, password string) (*entity.User, error) {
 	user, err := s.repo.Log(email)

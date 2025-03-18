@@ -59,7 +59,7 @@ func (h *HttpUserHandler) UpdateUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"success": false, "error": "invalid user ID"})
 	}
 	if err := c.BodyParser(&newUser); err != nil {
-		// fmt.Println(err)
+		fmt.Println(err)
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"success": false, "error": "invalid request"})
 	}
 	// newUser.Pictures = UploadPicsToR2()
