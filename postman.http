@@ -1,3 +1,12 @@
 
+
 get http://127.0.0.1:8000/chat/1
 
+###
+POST http://127.0.0.1:8000/message/
+Content-Type: application/json
+{
+    "SenderID": 1,
+    "ChatID": 1,
+    "Text": "fuck"
+}

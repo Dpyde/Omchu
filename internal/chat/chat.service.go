@@ -1,11 +1,7 @@
 package chat
 
-import (
-	"github.com/Dpyde/Omchu/internal/entity"
-)
-
 type ChatService interface {
-	GetChat(userId string) ([]entity.Chat, error)
+	GetChat(userId string) ([]ExtendedChat, error)
 }
 
 type chatServiceImpl struct {
@@ -16,10 +12,10 @@ func NewChatService(repo ChatRepository) ChatService {
 	return &chatServiceImpl{repo: repo}
 }
 
-func (s *chatServiceImpl) GetChat(userId string) ([]entity.Chat, error) {
-	chat, err := s.repo.FindById(userId)
+func (s *chatServiceImpl) GetChat(userId string) ([]ExtendedChat, error) {
+	chats, err := s.repo.FindById(userId)
 	if err != nil {
-		return []entity.Chat{}, err
+		return []ExtendedChat{}, err
 	}
-	return chat, nil
+	return chats, nil
 }

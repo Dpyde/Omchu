@@ -27,7 +27,7 @@ type Message struct {
 	SenderID uint
 	ChatID   uint
 	Text     string
-	Read    bool
+	Read     bool `gorm:"default:false"`
 }
 
 type Picture struct {

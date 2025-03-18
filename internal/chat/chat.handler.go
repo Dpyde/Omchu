@@ -15,11 +15,11 @@ func NewHttpChatHandler(service ChatService) *HttpChatHandler {
 }
 
 func (h *HttpChatHandler) GetChat(c *fiber.Ctx) error {
-	userId := c.Params("userId")
-	chat, err := h.service.GetChat(userId)
+	userId := c.Params("Id")
+	chats, err := h.service.GetChat(userId)
 	if err != nil {
 		fmt.Println(err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
-	return c.Status(fiber.StatusOK).JSON(chat)
+	return c.Status(fiber.StatusOK).JSON(chats)
 }
