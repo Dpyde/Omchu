@@ -13,6 +13,8 @@ import (
 	// userSer "github.com/Dpyde/Omchu/internal/service/user"
 	// middleware "github.com/Dpyde/Omchu/middleware"
 	"github.com/Dpyde/Omchu/database"
+	"github.com/Dpyde/Omchu/internal/hubrouter"
+	"github.com/Dpyde/Omchu/internal/ws"
 	"github.com/Dpyde/Omchu/route"
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
@@ -44,8 +46,14 @@ func main() {
 	route.SetupUserRoutes(app, db)
 	route.SetupAuthRoutes(app, db)
 	route.SetupSwipeRoutes(app, db)
-	route.SetUpMessageRoute(app, db)
+	go app.Listen(":8000")
 
+	hub := ws.NewHub()
+	WsHandler := ws.NewHandler(hub)
+	go hub.Run(db)
+
+	hubrouter.InitRouter(WsHandler)
 	// Start the server
-	app.Listen(":8000")
+	hubrouter.Start("127.0.0.1:8080")
+
 }

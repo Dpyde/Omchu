@@ -37,7 +37,6 @@ type Picture struct {
 }
 
 type Swipe struct {
-	gorm.Model
 	SwiperID uint `gorm:"primaryKey"`
 	SwipedID uint `gorm:"primaryKey"`
 	Liked    bool
