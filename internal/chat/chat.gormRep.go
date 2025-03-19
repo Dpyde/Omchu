@@ -1,6 +1,7 @@
 package chat
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/Dpyde/Omchu/internal/entity"
@@ -13,7 +14,8 @@ type GormChatRepository struct {
 
 type ExtendedChat struct {
 	ChatID uint
-	UserID uint
+	Username string
+	PictureProfile entity.Picture
 	Noti   bool
 }
 
@@ -52,13 +54,24 @@ func (r *GormChatRepository) FindById(userId string) ([]ExtendedChat, error) {
 		}
 
 		userIDInt, err := strconv.Atoi(userId)
+		fmt.Print(userID)
 		if err != nil {
 			return []ExtendedChat{}, err
 		}
+		var user entity.User
+		if err := r.db.Preload("Pictures").First(&user, userIDInt).Error; err != nil {
+			return nil, err
+		}
 		noti := latestMessage.ID != 0 && !latestMessage.Read && int(latestMessage.SenderID) != userIDInt // Check if the latest message is unread
+		Pictures := user.Pictures
+		var profilePic entity.Picture 
+		if len(Pictures) > 0 {
+			profilePic = Pictures[0]
+		}
 		extendedChats = append(extendedChats, ExtendedChat{
 			ChatID: chat.ID,
-			UserID: userID,
+			Username: user.Name,
+			PictureProfile: profilePic,
 			Noti:   noti,
 		})
 	}
