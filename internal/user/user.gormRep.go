@@ -33,6 +33,7 @@ func (r *GormUserRepository) FindUsersToSwipe(id uint) (*[]entity.User, error) {
 	err := r.db.
 		Where("id != ?", id).
 		Where("id NOT IN (?)", swiped).
+		Preload("Pictures").
 		Find(&users).Error
 
 	if err != nil {
