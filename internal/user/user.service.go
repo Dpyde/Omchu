@@ -46,7 +46,7 @@ func (s *userServiceImpl) FindUsersToSwipe(id uint) (*[]entity.User, error) {
 	return users, nil
 }
 func (s *userServiceImpl) FindByID(id uint) (*entity.User, error) {
-	user, err := s.repo.FindByIDGORM(id)
+	user, err := s.repo.GetMeGORM(id)
 	if err != nil {
 		return nil, err
 	}

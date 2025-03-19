@@ -42,13 +42,15 @@ func (r *GormUserRepository) FindUsersToSwipe(id uint) (*[]entity.User, error) {
 }
 
 // func (r *GormUserRepository) FindByIDGORM(id uint) (*entity.User, error) {
-func (r *GormUserRepository) FindByIDGORM(id uint) (*entity.User, error) {
+func (r *GormUserRepository) GetMeGORM(id uint) (*entity.User, error) {
 	var user entity.User
-	if err := r.db.First(&user, id).Error; err != nil {
+
+	if err := r.db.Preload("Pictures").First(&user, id).Error; err != nil {
 		return nil, err
 	}
 	return &user, nil
 }
+
 func (r *GormUserRepository) Update(newUser *entity.User, id uint) (*entity.User, error) {
 	var user entity.User
 	if err := r.db.First(&user, id).Error; err != nil {
