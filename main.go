@@ -11,6 +11,7 @@ import (
 	"github.com/Dpyde/Omchu/route"
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 const (
@@ -24,6 +25,7 @@ const (
 func main() {
 	// Configure your PostgreSQL database details here
 	app := fiber.New()
+	app.Use(cors.New())
 	db, err := database.InitDatabase()
 	if err != nil {
 		log.Fatal(err)
