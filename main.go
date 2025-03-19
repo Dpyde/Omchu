@@ -25,7 +25,10 @@ const (
 func main() {
 	// Configure your PostgreSQL database details here
 	app := fiber.New()
-	app.Use(cors.New())
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*", // Allows requests from any origin (every IP)
+	}))
+	
 	db, err := database.InitDatabase()
 	if err != nil {
 		log.Fatal(err)
