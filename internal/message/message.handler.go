@@ -3,6 +3,8 @@ package message
 import (
 	"github.com/Dpyde/Omchu/internal/entity"
 	"github.com/gofiber/fiber/v2"
+	"strconv"
+	"fmt"
 )
 
 type HttpMessageHandler struct {
@@ -38,9 +40,22 @@ func (h *HttpMessageHandler) GetMessage(c *fiber.Ctx) error {
 
 func (h *HttpMessageHandler) SendMessage(c *fiber.Ctx) error {
 	var message entity.Message
+	idStr, ok := c.Locals("UserId").(string)
+	if !ok {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"success": false,
+			"message": "UserId not found in context",
+		})
+	}
+	id, err := strconv.ParseUint(idStr, 10, 32)
+	if err != nil {
+		fmt.Println(err)
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"success": false, "error": "invalid user ID"})
+	}
 	if err := c.BodyParser(&message); err != nil {
 
 	}
+	message.SenderID = uint(id)
 
 	if err := h.service.SendMessage(&message); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
