@@ -98,7 +98,7 @@ func ExtractUserFromJWT(c *fiber.Ctx) error {
 	// Extract the token from the Fiber context (inserted by the JWT middleware)
 	tokenStr := c.Cookies("token")
 	if tokenStr == "" {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "No token found"})
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"success": false, "error": "No token found"})
 	}
 	token, err := jwt.Parse(tokenStr, nil)
 	if err != nil || !token.Valid {
@@ -112,7 +112,7 @@ func ExtractUserFromJWT(c *fiber.Ctx) error {
 
 	userID, ok := claims["id"].(string)
 	if !ok {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token"})
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"success": false, "error": "Invalid token"})
 	}
 
 	// Store the user data in the Fiber context

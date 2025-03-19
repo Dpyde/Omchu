@@ -40,7 +40,7 @@ func Middleware(c *fiber.Ctx) error {
 	if err != nil || !token.Valid {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"success": false,
-			"error":   "Token mueng mai mee wa",
+			"error":   "Token mueng pid wa",
 		})
 	}
 
