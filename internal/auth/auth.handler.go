@@ -5,9 +5,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/Dpyde/Omchu/internal/entity"
 	"github.com/gofiber/fiber/v2"
-	jwt "github.com/golang-jwt/jwt/v5"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type HttpAuthHandler struct {
@@ -19,36 +18,46 @@ func NewHttpAuthHandler(service AuthService) *HttpAuthHandler {
 }
 
 func (h *HttpAuthHandler) Login(c *fiber.Ctx) error {
-	var user entity.User
-	if err := c.BodyParser(&user); err != nil {
+	type Req struct {
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}
+	var req Req
+	if err := c.BodyParser(&req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"success": false, "error": "invalid request"})
 	}
-
-	if err := h.service.Login(user.Email, user.Password); err != nil {
+	user, err := h.service.Login(req.Email, req.Password)
+	if err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"success": false, "error": err.Error()})
 	}
 
 	// return c.JSON(fiber.Map{"token": token})
-	return SendTokenResponse(c, user, fiber.StatusOK)
+	return SendTokenResponse(c, user.ID, fiber.StatusOK)
 }
 
 func (h *HttpAuthHandler) Register(c *fiber.Ctx) error {
-	var user entity.User
-	if err := c.BodyParser(&user); err != nil {
+	type Req struct {
+		Name     string `json:"name"`
+		Email    string `json:"email"`
+		Password string `json:"password"`
+		Age      uint   `json:"age"`
+	}
+	var req Req
+	if err := c.BodyParser(&req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"success": false, "error": "invalid request"})
 	}
 
-	newUser, err := h.service.Register(user.Name, user.Email, user.Password, user.Age)
+	newUser, err := h.service.Register(req.Name, req.Email, req.Password, req.Age)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"success": false, "error": err.Error()})
 	}
-	return SendTokenResponse(c, *newUser, fiber.StatusCreated)
+	return SendTokenResponse(c, newUser.ID, fiber.StatusCreated)
 
 }
 
 // Note: This function is not part of the original code snippet
-func SendTokenResponse(c *fiber.Ctx, user entity.User, statusCode int) error {
-	token, err := GenerateToken(strconv.FormatInt(int64(user.ID), 10))
+func SendTokenResponse(c *fiber.Ctx, id uint, statusCode int) error {
+	token, err := GenerateToken(strconv.FormatInt(int64(id), 10))
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"success": false,
@@ -75,7 +84,16 @@ func SendTokenResponse(c *fiber.Ctx, user entity.User, statusCode int) error {
 	})
 }
 
-func extractUserFromJWT(c *fiber.Ctx) error {
+func RetrieveTokenRequest(c *fiber.Ctx) error {
+	cookie := c.Cookies("token")
+	id, err := TokenToId(cookie)
+	if err != nil {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"success": false, "error": "invalid token"})
+	}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"success": true, "id": id})
+}
+
+func ExtractUserFromJWT(c *fiber.Ctx) error {
 
 	// Extract the token from the Fiber context (inserted by the JWT middleware)
 	tokenStr := c.Cookies("token")

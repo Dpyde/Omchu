@@ -4,15 +4,8 @@ import (
 	"fmt"
 	"log"
 
-	// authGormRep "github.com/Dpyde/Omchu/adapter/gorm/auth"
-	// userGormRep "github.com/Dpyde/Omchu/adapter/gorm/user"
-	// authHndl "github.com/Dpyde/Omchu/adapter/http/auth"
-	// userHndl "github.com/Dpyde/Omchu/adapter/http/user"
-	// "github.com/Dpyde/Omchu/database"
-	// authSer "github.com/Dpyde/Omchu/internal/service/auth"
-	// userSer "github.com/Dpyde/Omchu/internal/service/user"
-	// middleware "github.com/Dpyde/Omchu/middleware"
 	"github.com/Dpyde/Omchu/database"
+	"github.com/Dpyde/Omchu/picture"
 	"github.com/Dpyde/Omchu/hubrouter"
 	"github.com/Dpyde/Omchu/internal/ws"
 	"github.com/Dpyde/Omchu/route"
@@ -35,13 +28,23 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("Database connected")
+	if err1 := godotenv.Load(); err1 != nil {
+		log.Fatal(err1)
+	}
+
 	err = godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
+
+	fmt.Println("Database connected")
+
+	picture.InitR2()
+	fmt.Println("Cloud connect")
+
 	// Configure your PostgreSQL database details here
 
+	route.SetupPictureRoutes(app, db)
 	route.SetupChatRoutes(app, db)
 	route.SetupUserRoutes(app, db)
 	route.SetupAuthRoutes(app, db)

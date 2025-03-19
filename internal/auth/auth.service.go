@@ -3,7 +3,9 @@ package auth
 import (
 	"errors"
 	"os"
+	"regexp"
 	"time"
+	"unicode"
 
 	"github.com/Dpyde/Omchu/internal/entity"
 
@@ -13,7 +15,8 @@ import (
 
 type AuthService interface {
 	Register(username string, email string, password string, age uint) (*entity.User, error)
-	Login(email string, password string) error
+	Login(email string, password string) (*entity.User, error)
+	// TokenToId(token string) (string, error)
 }
 
 type authServiceImpl struct {
@@ -24,25 +27,62 @@ func NewAuthService(repo AuthRepository) AuthService {
 	return &authServiceImpl{repo: repo}
 }
 
-func (s *authServiceImpl) Login(email string, password string) error {
+func constraintCheck(email string, password string, age uint) error {
+	var emailRegex = regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
+
+	// Password rules: At least 8 characters, one uppercase, one lowercase, one number
+	// Validate email
+	if !emailRegex.MatchString(email) {
+		return errors.New("invalid email format")
+	}
+
+	// Validate password
+	if !isValidPassword(password) {
+		return errors.New("password must be at least 8 characters, include one uppercase, one lowercase, and one number")
+	}
+	if age < 18 {
+		return errors.New("PM might hungry")
+	}
+
+	return nil
+}
+func isValidPassword(password string) bool {
+	if len(password) < 8 {
+		return false
+	}
+
+	hasUpper, hasLower, hasDigit := false, false, false
+	for _, char := range password {
+		switch {
+		case unicode.IsLower(char):
+			hasLower = true
+		case unicode.IsUpper(char):
+			hasUpper = true
+		case unicode.IsDigit(char):
+			hasDigit = true
+		}
+	}
+
+	return hasUpper && hasLower && hasDigit
+}
+func (s *authServiceImpl) Login(email string, password string) (*entity.User, error) {
 	user, err := s.repo.Log(email)
 	if err != nil {
-		return errors.New("user not found")
+		return nil, errors.New("user not found")
 	}
 	if !ComparePassword(password, user) {
-		return errors.New("incorrect password")
+		return nil, errors.New("Invalid credentials")
 	}
-	return nil
+	return user, nil
 }
 func (s *authServiceImpl) Register(username string, email string, password string, age uint) (*entity.User, error) {
 	_, err := s.repo.Log(email)
 	if err == nil {
 		return nil, errors.New("email already taken")
 	}
-	if age <= 18 {
-		return nil, errors.New("PM might hungry")
+	if err := constraintCheck(email, password, age); err != nil {
+		return nil, err
 	}
-
 	hashedPassword, err := HashPassword(password)
 	if err != nil {
 		return nil, err
@@ -57,6 +97,22 @@ func (s *authServiceImpl) Register(username string, email string, password strin
 		return nil, err
 	}
 	return newUser, nil
+}
+
+func TokenToId(token string) (string, error) {
+	secret := os.Getenv("JWT_SECRET")
+	t, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
+		return []byte(secret), nil
+	})
+	if err != nil {
+		return "", err
+	}
+	claims, ok := t.Claims.(jwt.MapClaims)
+	if !ok || !t.Valid {
+		return "", err
+	}
+	return claims["id"].(string), nil
+
 }
 
 // NOTE: The following functions are not used in the current implementation

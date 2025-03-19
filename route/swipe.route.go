@@ -13,6 +13,7 @@ func SetupSwipeRoutes(app *fiber.App, db *gorm.DB) {
 	swipeHandler := swipe.NewHttpSwipeHandler(swipeService)
 
 	swipesRoutes := app.Group("/swipe")
-	//swipesRoutes.Use(middleware.Middleware)
-	swipesRoutes.Post("/",middleware.Middleware, swipeHandler.SwipeCheck)
+	swipesRoutes.Use(middleware.Middleware)
+	swipesRoutes.Post("/", swipeHandler.SwipeCheck)
+
 }

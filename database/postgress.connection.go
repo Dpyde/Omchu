@@ -55,14 +55,27 @@ func InitDatabase() (db *gorm.DB, err error) {
 
 	// initialize the database with some data
 	//newMessage := entity.Message{SenderID: 1,Text: "Hello World!"}
+
+	// newSwipe := entity.Swipe{SwiperID: 1, SwipedID: 2, Liked: true}
+	// // newSwipe := entity.Swipe{SwiperID: 1, Liked: true}
+	newUser1 := entity.User{Name: "John Doe", Age: 12, Email: "myemail1", Color: "blue", Password: "password1"}
+	// newUser2 := entity.User{Name: "Jane Doe", Age: 18, Email: "myemail2", Color: "blue", Password: "password2"}
+	// newUser3 := entity.User{Name: "Juhn Doe", Age: 144, Email: "myemail3", Color: "blue", Password: "password3"}
+	// newUser4 := entity.User{Name: "Jahn Doe", Age: 14, Email: "myemail4", Color: "blue", Password: "password4", Swipes: []entity.Swipe{newSwipe}}
+
 	password1, err := auth.HashPassword("password")
 	newUser2 := entity.User{Name: "Jane Doe", Age: 18, Email: "myemail2", Color: "blue", Password: "password2"}
 	newSwipe := entity.Swipe{SwiperID: 1, SwipedID: 2, Liked: true}
 	newUser := entity.User{Name: "John Doe", Age: 12, Email: "myemail", Color: "blue", Password: password1, Swipes: []entity.Swipe{newSwipe}}
+	// db.Create(&newUser1)
 	db.Create(&newUser)
-	db.Create(&newUser2)
-	newChat := entity.Chat{Users: []entity.User{newUser, newUser2}, Messages: []entity.Message{}}
+
+	// db.Create(&newUser2)
+	// db.Create(&newUser3)
+	// db.Create(&newUser4)
+	newChat := entity.Chat{Users: []entity.User{newUser1, newUser2}, Messages: []entity.Message{}}
 	db.Create(&newChat)
+	fmt.Println(newSwipe)
 
 	// newChat := entity.Chat{Users: []entity.User{newUser,newUser2}, Messages: []entity.Message{newMessage}}
 	// db.Create(&newChat)s
