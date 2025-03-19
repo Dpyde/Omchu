@@ -15,7 +15,13 @@ func NewHttpChatHandler(service ChatService) *HttpChatHandler {
 }
 
 func (h *HttpChatHandler) GetChat(c *fiber.Ctx) error {
-	userId := c.Params("Id")
+	userId, ok := c.Locals("UserId").(string)
+	if !ok {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"success": false,
+			"message": "UserId not found in context",
+		})
+	}
 	chats, err := h.service.GetChat(userId)
 	if err != nil {
 		fmt.Println(err)

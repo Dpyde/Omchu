@@ -17,6 +17,6 @@ func SetupPictureRoutes(app *fiber.App, db *gorm.DB) {
 
 	PicturesRoutes := app.Group("/picture")
 	PicturesRoutes.Use(middleware.Middleware)
-	PicturesRoutes.Post("/:id", PictureHandler.UploadPics)
-	PicturesRoutes.Get("/:id", PictureHandler.GetPicsByUserId)
+	PicturesRoutes.Post("/", PictureHandler.UploadPics)
+	PicturesRoutes.Get("/", PictureHandler.GetPicsByUserId)
 }

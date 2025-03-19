@@ -25,7 +25,7 @@ func (r *GormUserRepository) CreateUser(user *entity.User) (*entity.User, error)
 	// fmt.Println("checkPoint4")
 	return user, nil
 }
-func (r *GormUserRepository) GetUsersToSwipe(id uint) (*[]entity.User, error) {
+func (r *GormUserRepository) FindUsersToSwipe(id uint) (*[]entity.User, error) {
 	var users []entity.User
 	swiped := r.db.Model(&entity.Swipe{}).
 		Select("swiped_id").
