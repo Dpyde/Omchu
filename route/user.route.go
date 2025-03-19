@@ -14,7 +14,7 @@ func SetupUserRoutes(app *fiber.App, db *gorm.DB) {
 
 	userRoutes := app.Group("/user")
 	userRoutes.Post("/", middleware.Middleware, userHandler.CreateUser)
-	userRoutes.Put("/:id", middleware.Middleware, userHandler.UpdateUser)
+	userRoutes.Put("/", middleware.Middleware, userHandler.UpdateUser)
 	userRoutes.Delete("/:id", middleware.Middleware, userHandler.RemoveUser)
 	userRoutes.Get("/:id", middleware.Middleware, userHandler.FindByID)
 	userRoutes.Get("/swipe/:id", middleware.Middleware, userHandler.FindUsersToSwipe)

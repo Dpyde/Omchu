@@ -50,11 +50,13 @@ func (h *HttpUserHandler) FindUsersToSwipe(c *fiber.Ctx) error {
 
 func (h *HttpUserHandler) UpdateUser(c *fiber.Ctx) error {
 	var newUser entity.User
-	idStr := c.Params("id")
+	//idStr := c.Params("id")
+	idStr,ok := c.Locals("UserId").(string)
+	if(!ok) {return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"success":false,"error": "No UserId in local"})}
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
 		fmt.Println(err)
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"success": false, "error": "invalid user ID"})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"success": false, "error": "invalid user ID in local"})
 	}
 	if err := c.BodyParser(&newUser); err != nil {
 		fmt.Println(err)
