@@ -119,3 +119,20 @@ func (h *HttpUserHandler) RemoveUser(c *fiber.Ctx) error {
 	}
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"success": true, "message": "user deleted successfully"})
 }
+
+func (h *HttpUserHandler) GetMe(c *fiber.Ctx) error {
+	//idStr := c.Params("id")
+	idStr,ok := c.Locals("UserId").(string)
+	if(!ok) {return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"success":false,"error": "No UserId in local"})}
+	id, err := strconv.ParseUint(idStr, 10, 32)
+	if err != nil {
+		fmt.Println(err)
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"success": false, "error": "invalid user ID"})
+	}
+	user, err := h.service.FindByID(uint(id))
+	if err != nil {
+		// Return an appropriate error message and status code
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"success": false, "error": err.Error()})
+	}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"success": true, "user": user})
+}
