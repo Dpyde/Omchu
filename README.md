@@ -1,4 +1,8 @@
-เปิด database 
+ดาวโหลด go
+```markdown
+https://go.dev/doc/install
+```
+เปิด database
 ```markdown
 docker-compose up -d
 ```
