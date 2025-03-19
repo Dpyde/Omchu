@@ -17,7 +17,13 @@ func NewHttpPictureHandler(service PictureService) *HttpPictureHandler {
 
 func (h *HttpPictureHandler) UploadPics(c *fiber.Ctx) error {
 	// Parse user ID from form-data
-	idStr := c.Params("id")
+	idStr, ok := c.Locals("UserId").(string)
+	if !ok {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"success": false,
+			"message": "UserId not found in context",
+		})
+	}
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -66,7 +72,13 @@ func (h *HttpPictureHandler) UploadPics(c *fiber.Ctx) error {
 }
 
 func (h *HttpPictureHandler) GetPicsByUserId(c *fiber.Ctx) error {
-	idStr := c.Params("id")
+	idStr, ok := c.Locals("UserId").(string)
+	if !ok {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"success": false,
+			"message": "UserId not found in context",
+		})
+	}
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	pictures, err := h.service.GetPicsByUserId(uint(id))
 	if err != nil {

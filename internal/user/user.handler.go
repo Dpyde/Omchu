@@ -34,7 +34,13 @@ func (h *HttpUserHandler) CreateUser(c *fiber.Ctx) error {
 }
 
 func (h *HttpUserHandler) FindUsersToSwipe(c *fiber.Ctx) error {
-	idStr := c.Params("id")
+	idStr, ok := c.Locals("UserId").(string)
+	if !ok {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"success": false,
+			"message": "UserId not found in context",
+		})
+	}
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
 		fmt.Println(err)
@@ -51,7 +57,14 @@ func (h *HttpUserHandler) FindUsersToSwipe(c *fiber.Ctx) error {
 
 func (h *HttpUserHandler) UpdateUser(c *fiber.Ctx) error {
 	var newUser entity.User
-	idStr := c.Params("id")
+	idStr, ok := c.Locals("UserId").(string)
+	if !ok {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"success": false,
+			"message": "UserId not found in context",
+		})
+	}
+	// idStr := c.Params("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
 		// fmt.Println(err)
@@ -70,8 +83,14 @@ func (h *HttpUserHandler) UpdateUser(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"success": true, "user": updatedUser})
 }
 
-func (h *HttpUserHandler) FindByID(c *fiber.Ctx) error {
-	idStr := c.Params("id")
+func (h *HttpUserHandler) GetMe(c *fiber.Ctx) error {
+	idStr, ok := c.Locals("UserId").(string)
+	if !ok {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"success": false,
+			"message": "UserId not found in context",
+		})
+	}
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
 		fmt.Println(err)
@@ -86,7 +105,19 @@ func (h *HttpUserHandler) FindByID(c *fiber.Ctx) error {
 }
 
 func (h *HttpUserHandler) RemoveUser(c *fiber.Ctx) error {
-	idStr := c.Params("id")
+	idStr, ok := c.Locals("UserId").(string)
+	if !ok {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"success": false,
+			"message": "UserId not found in context",
+		})
+	}
+	if !ok {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"success": false,
+			"message": "UserId not found in context",
+		})
+	}
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
 		fmt.Println(err)
@@ -101,23 +132,3 @@ func (h *HttpUserHandler) RemoveUser(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"success": true, "message": "user deleted successfully"})
 
 }
-
-// func (h *HttpUserHandler) FindByUsername(c *fiber.Ctx) error {
-// 	username := c.Params("username")
-// 	user, err := h.service.FindByUsername(username)
-// 	if err != nil {
-// 		// Return an appropriate error message and status code
-// 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"success": false, "error": err.Error()})
-// 	}
-// 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"success": true, "user": user})
-// }
-
-// func (h *HttpUserHandler) FindByEmail(c *fiber.Ctx) error {
-// 	email := c.Params("email")
-// 	user, err := h.service.FindByEmail(email)
-// 	if err != nil {
-// 		// Return an appropriate error message and status code
-// 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"success": false, "error": err.Error()})
-// 	}
-// 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"success": true, "user": user})
-// }
