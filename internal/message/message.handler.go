@@ -17,13 +17,22 @@ func (h *HttpMessageHandler) GetMessage(c *fiber.Ctx) error {
 	chatId := c.Params("chatId")
 	UserId, ok := c.Locals("UserId").(string)
 	if !ok {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "UserId not found in context"})
-	}
+	return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+		"success": false,
+		"message": "UserId not found in context",
+	})
+
 	messages, err := h.service.GetMessage(chatId, UserId)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err})
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"success": false,
+			"error":   err.Error(),
+		})
 	}
-	return c.Status(fiber.StatusOK).JSON(messages)
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"success": true,
+		"data":    messages,
+	})
 }
 
 func (h *HttpMessageHandler) SendMessage(c *fiber.Ctx) error {
@@ -33,7 +42,13 @@ func (h *HttpMessageHandler) SendMessage(c *fiber.Ctx) error {
 	}
 
 	if err := h.service.SendMessage(&message); err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"success": false,
+			"error":   err.Error(),
+		})
 	}
-	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"message": "Message created"})
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+		"success": true,
+		"message": "Message created",
+	})
 }

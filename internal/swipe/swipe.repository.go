@@ -5,5 +5,5 @@ import (
 )
 
 type SwipeRepository interface {
-	Pud(user *entity.Swipe,is_match *bool) error
+	Pud(user *entity.Swipe,is_match *bool) (uint,error)
 }
