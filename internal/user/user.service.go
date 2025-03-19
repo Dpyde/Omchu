@@ -39,7 +39,7 @@ func (s *userServiceImpl) CreateUser(user entity.User) (*entity.User, error) {
 	return newUser, nil
 }
 func (s *userServiceImpl) FindUsersToSwipe(id uint) (*[]entity.User, error) {
-	users, err := s.repo.FindUsersToSwipe(id)
+	users, err := s.repo.GetUsersToSwipe(id)
 	if err != nil {
 		return nil, err
 	}
@@ -65,18 +65,3 @@ func (s *userServiceImpl) RemoveUser(id uint) error {
 	}
 	return nil
 }
-
-// func (s *userServiceImpl) FindByUsername(username string) (*entity.User, error) {
-// 	user, err := s.repo.FindByUsernameGORM(username)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return user, nil
-// }
-// func (s *userServiceImpl) FindByEmail(email string) (*entity.User, error) {
-// 	user, err := s.repo.FindByEmailGORM(email)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return user, nil
-// }

@@ -51,7 +51,6 @@ func (h *HttpUserHandler) FindUsersToSwipe(c *fiber.Ctx) error {
 
 func (h *HttpUserHandler) UpdateUser(c *fiber.Ctx) error {
 	var newUser entity.User
-
 	idStr := c.Params("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {

@@ -17,7 +17,7 @@ func NewHttpPictureHandler(service PictureService) *HttpPictureHandler {
 
 func (h *HttpPictureHandler) UploadPics(c *fiber.Ctx) error {
 	// Parse user ID from form-data
-	idStr := c.FormValue("id")
+	idStr := c.Params("id")
 	id, err := strconv.ParseUint(idStr, 10, 32)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
