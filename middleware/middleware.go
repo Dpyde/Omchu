@@ -43,25 +43,6 @@ func Middleware(c *fiber.Ctx) error {
 			"error":   "Token mueng mai mee wa",
 		})
 	}
-    // Extract claims from the token
-    claims, ok := token.Claims.(jwt.MapClaims)
-    if !ok {
-        return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-            "success": false,
-            "error":   "Invalid token claims",
-        })
-    }
-
-    // Extract user ID from the claims
-    userID, ok := claims["id"].(string)
-    if !ok {
-        return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-            "error": "User ID not found in token",
-        })
-    }
-
-    // Store the userId in Fiber's context
-    c.Locals("UserId", userID)
 
 	// Extract claims from the token
 	claims, ok := token.Claims.(jwt.MapClaims)
