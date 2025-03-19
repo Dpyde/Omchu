@@ -39,7 +39,7 @@ func (s *userServiceImpl) CreateUser(user entity.User) (*entity.User, error) {
 	return newUser, nil
 }
 func (s *userServiceImpl) FindUsersToSwipe(id uint) (*[]entity.User, error) {
-	users, err := s.repo.GetUsersToSwipe(id)
+	users, err := s.repo.FindUsersToSwipe(id)
 	if err != nil {
 		return nil, err
 	}
