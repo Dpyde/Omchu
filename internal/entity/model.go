@@ -11,6 +11,7 @@ type User struct {
 	Email    string `gorm:"unique"`
 	Color    string
 	Password string
+	Description string `gorm:"type:varchar(100)"`
 	Pictures []Picture
 	Chats    []Chat  `gorm:"many2many:chat_users;"`
 	Swipes   []Swipe `gorm:"foreignKey:SwiperID"`

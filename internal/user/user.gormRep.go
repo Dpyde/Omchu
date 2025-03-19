@@ -74,6 +74,9 @@ func (r *GormUserRepository) Update(newUser *entity.User, id uint) (*entity.User
 	if newUser.Password != "" {
 		updates["password"] = newUser.Password
 	}
+	if newUser.Description != ""{
+		updates["description"] = newUser.Description
+	}
 
 	if len(updates) > 0 {
 		if err := r.db.Model(&user).Omit("Chats", "Swipes").Updates(updates).Error; err != nil {
